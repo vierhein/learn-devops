@@ -6,7 +6,9 @@ server {
 	root /var/www/site-a/html;
 	index index.html
 
-	return 301 https://$host$request_uri;
+	location / {
+		try_files $uri $uri/ =404;
+	}
 }
 
 #site-b
@@ -17,9 +19,12 @@ server {
 	server_name learndevopsandrei.ddns.net;
 
 	root /var/www/site-b/html;
-	index index.html;
+	index index.php;
 
-	location / {
-		try_files $uri $uri/ =404;
-	}
+	location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
 }

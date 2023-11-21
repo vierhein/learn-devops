@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# Install web server (Nginx)
+# Install web server and php
 sudo apt update
-sudo apt install -y nginx
+sudo apt install -y nginx php-fpm
 
 # Configure firewall (allow SSH, HTTP, HTTPS)
 sudo ufw allow 22
@@ -25,9 +25,9 @@ sudo mkdir -p /var/www/site-b/html
 sudo chown -R $USER:$USER /var/www/site-b/html
 sudo chmod -R 755 /var/www/site-b
 
-sudo cat index > /var/www/site-a/html/index.html # дописать содержимое
+sudo cat index.php > /var/www/site-b/html/index.php # дописать содержимое
 
-sudo cat def > /etc/nginx/sites-available/default # дописать содержимое
+sudo cat default > /etc/nginx/sites-available/default # дописать содержимое
 
 # Add SSL certificate (Let's Encrypt)
 sudo snap install core; sudo snap refresh core
