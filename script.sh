@@ -12,22 +12,21 @@ sudo ufw allow 8080 #for site-b
 sudo ufw enable
 
 # Add users
-# user 1
-# user 2
+sudo useradd -p $(perl -e 'print crypt($ARGV[0], "password")' '123456') user-a
+sudo useradd -p $(perl -e 'print crypt($ARGV[0], "password")' '123456') user-b
 
 #site-a
 sudo mkdir -p /var/www/site-a/html
-sudo chown -R $USER:$USER /var/www/site-a/html
+sudo chown -R user-a:user-a /var/www/site-a/html
 sudo chmod -R 755 /var/www/site-a
 
 #site-b
 sudo mkdir -p /var/www/site-b/html
-sudo chown -R $USER:$USER /var/www/site-b/html
+sudo chown -R user-b:user-b /var/www/site-b/html
 sudo chmod -R 755 /var/www/site-b
 
-sudo cat index.php > /var/www/site-b/html/index.php # дописать содержимое
-
-sudo cat default > /etc/nginx/sites-available/default # дописать содержимое
+sudo cat index.php > /var/www/site-a/html/index.php # create server info page for site-a
+sudo cat default > /etc/nginx/sites-available/default # setting nginx config
 
 # Add SSL certificate (Let's Encrypt)
 sudo snap install core; sudo snap refresh core
@@ -35,7 +34,7 @@ sudo snap install --classic certbot
 sudo ln -s /snap/bin/certbot /usr/bin/certbot
 
 sudo certbot --nginx -d learndevopsandrei.ddns.net # get cert
-
 sudo cat addssl >> /etc/nginx/sites-available/default # add nginx config for ssl
 
-# Manage logs Nginx
+
+# Manage logs

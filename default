@@ -3,22 +3,8 @@ server {
 	listen [::]:80;
 
 	server_name learndevopsandrei.ddns.net;
+
 	root /var/www/site-a/html;
-	index index.html
-
-	location / {
-		try_files $uri $uri/ =404;
-	}
-}
-
-#site-b
-server {
-	listen 8080;
-	listen [::]:8080;
-
-	server_name learndevopsandrei.ddns.net;
-
-	root /var/www/site-b/html;
 	index index.php;
 
 	location ~ \.php$ {
@@ -27,4 +13,17 @@ server {
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         include fastcgi_params;
     }
+}
+
+server {
+	listen 8080;
+	listen [::]:8080;
+
+	server_name learndevopsandrei.ddns.net;
+	root /var/www/site-b/html;
+	index index.html;
+
+	location / {
+		return 301 https://nginx.org/;
+	}
 }
