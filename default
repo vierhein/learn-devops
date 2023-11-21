@@ -1,0 +1,25 @@
+server {
+	listen 80;
+	listen [::]:80;
+
+	server_name learndevopsandrei.ddns.net;
+	root /var/www/site-a/html;
+	index index.html
+
+	return 301 https://$host$request_uri;
+}
+
+#site-b
+server {
+	listen 8080;
+	listen [::]:8080;
+
+	server_name learndevopsandrei.ddns.net;
+
+	root /var/www/site-b/html;
+	index index.html;
+
+	location / {
+		try_files $uri $uri/ =404;
+	}
+}

@@ -1,0 +1,24 @@
+server {
+        # SSL configuration
+
+        listen 443 ssl;
+        listen [::]:443 ssl;
+
+        server_name learndevopsandrei.ddns.net;
+
+        ssl_certificate "/etc/letsencrypt/live/learndevopsandrei.ddns.net/fullchain.pem";
+        ssl_certificate_key "/etc/letsencrypt/live/learndevopsandrei.ddns.net/privkey.pem";
+        ssl_protocols TLSv1.2 TLSv1.3;
+        ssl_ciphers ECDH+AESGCM:ECDH+AES256:ECDH+AES128:DH+3DES:!ADH:!AECDH:!MD5;
+
+        ssl_session_cache shared:SSL:1m;
+        ssl_session_timeout  10m;
+        ssl_prefer_server_ciphers on;
+
+        error_page 500 502 503 504 /custom_50x.html;
+        location / {
+                # First attempt to serve request as file, then
+                # as directory, then fall back to displaying a 404.
+                try_files $uri $uri/ =404;
+        }
+}
