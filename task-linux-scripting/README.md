@@ -15,4 +15,3 @@ sudo usermod -aG sudo user-run
 sudo chown user-run:user-run /path/to/script.sh <br>
 
 3. Get domain name learndevopsandrei.ddns.net
-
