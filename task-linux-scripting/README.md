@@ -1,19 +1,18 @@
 # devops
-1. Set up server access using SSH with a key.
+1. Set up server access using SSH with a key. <br>
 
-Run: ssh-keygen -t ed25519
-Follow the prompts to generate a new SSH key pair
-Connect to server via password
-Copy the public key to the server to ~/.ssh/authorized_keys
-Connect to server via ssh
-Run: sudo chmod +x /path/to/script.sh
+Run: ssh-keygen -t ed25519 <br>
+Follow the prompts to generate a new SSH key pair <br>
+Connect to server via password <br>
+Copy the public key to the server to ~/.ssh/authorized_keys <br>
+Connect to server via ssh <br>
+Run: sudo chmod +x /path/to/script.sh <br>
 
-2. Create user for run script.sh
+2. Create user for run script.sh <br>
 
-sudo useradd -p $(perl -e 'print crypt($ARGV[0], "password")' '123456') user-run
-sudo chown user-run:user-run /path/to/script.sh
-sudo chmod 500 /path/to/script.sh
+sudo useradd -p $(perl -e 'print crypt($ARGV[0], "password")' '123456') user-run <br>
+sudo chown user-run:user-run /path/to/script.sh <br>
+sudo chmod 500 /path/to/script.sh <br>
 
-3. Run script
+3. Run script <br>
 
-su - user-run
