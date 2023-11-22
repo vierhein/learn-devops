@@ -28,7 +28,7 @@ sudo chmod -R 755 /var/www/site-b
 sudo cat index.php > /var/www/site-a/html/index.php # create server info page for site-a
 sudo cat default > /etc/nginx/sites-available/default # setting nginx config
 
-# Add SSL certificate (Let's Encrypt)
+# Add SSL certificate (Certbot)
 sudo snap install core; sudo snap refresh core
 sudo snap install --classic certbot
 sudo ln -s /snap/bin/certbot /usr/bin/certbot
@@ -36,5 +36,7 @@ sudo ln -s /snap/bin/certbot /usr/bin/certbot
 sudo certbot --nginx -d learndevopsandrei.ddns.net # get cert
 sudo cat addssl >> /etc/nginx/sites-available/default # add nginx config for ssl
 
-
 # Manage logs
+sudo cat logrotateconf > /etc/logrotate.d/nginx
+
+sudo systemctl restart nginx
