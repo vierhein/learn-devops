@@ -11,8 +11,8 @@ Run: sudo chmod +x /path/to/script.sh <br>
 2. Create user for run script.sh <br>
 
 sudo useradd -p $(perl -e 'print crypt($ARGV[0], "password")' '123456') user-run <br>
+sudo usermod -aG sudo user-run
 sudo chown user-run:user-run /path/to/script.sh <br>
-sudo chmod 500 /path/to/script.sh <br>
 
-3. Run script <br>
+3. Get domain name learndevopsandrei.ddns.net
 
