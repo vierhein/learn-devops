@@ -2,7 +2,7 @@
 
 # Install web server and php
 sudo apt update
-sudo apt install -y nginx php-fpm
+sudo apt install -y nginx php7.4-fpm openssl
 
 # Configure firewall (allow SSH, HTTP, HTTPS)
 sudo ufw allow 22
@@ -25,16 +25,16 @@ sudo mkdir -p /var/www/site-b/html
 sudo chown -R user-b:user-b /var/www/site-b/html
 sudo chmod -R 755 /var/www/site-b
 
-sudo cat index.php | sudo tee /var/www/site-a/html/index.php # create server info page for site-a
-sudo cat default | sudo tee /etc/nginx/sites-available/default # setting nginx config
+sudo cat index.php | sudo tee /var/www/site-a/html/index.php > /dev/null # create server info page for site-a
+sudo cat default | sudo tee /etc/nginx/sites-available/default > /dev/null # setting nginx config
 
 # Add SSL certificate (Certbot)
 
 
 #sudo certbot --nginx -d learndevopsandrei.ddns.net # get cert
-sudo cat addssl | sudo tee -a /etc/nginx/sites-available/default # add nginx config for ssl
+sudo cat addssl | sudo tee -a /etc/nginx/sites-available/default > /dev/null # add nginx config for ssl
 
 # Manage logs
-sudo cat logrotateconf | sudo tee /etc/logrotate.d/nginx
+sudo cat logrotateconf | sudo tee /etc/logrotate.d/nginx > /dev/null
 
 sudo systemctl restart nginx
