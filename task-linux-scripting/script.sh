@@ -28,8 +28,8 @@ sudo chmod -R 755 /var/www/site-b
 sudo cat index.php | sudo tee /var/www/site-a/html/index.php > /dev/null # create server info page for site-a
 sudo cat default | sudo tee /etc/nginx/sites-available/default > /dev/null # setting nginx config
 
-# Add SSL certificate (Certbot)
-
+# Add SSL certificate (self-sign ssl)
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /var/www/site-a/private.key -out /var/www/site-a/certificate.crt
 
 #sudo certbot --nginx -d learndevopsandrei.ddns.net # get cert
 sudo cat addssl | sudo tee -a /etc/nginx/sites-available/default > /dev/null # add nginx config for ssl
