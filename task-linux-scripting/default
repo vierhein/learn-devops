@@ -2,20 +2,16 @@ server {
 	listen 80;
 	listen [::]:80;
 
-	server_name 192.168.100.47;
+	server_name site-a.local www.site-a.local;
 
 	return 301 https://$host$request_uri;
 }
 
 server {
-	listen 8080;
-	listen [::]:8080;
+	listen 80;
+	listen [::]:80;
 
-	server_name 192.168.100.47;
-	root /var/www/site-b/html;
-	index index.html;
-
-	location / {
-		try_files $uri $uri/ =404;
-	}
+	server_name site-b.local www.site-b.local;
+	
+	return 301 https://$host$request_uri;
 }

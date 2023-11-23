@@ -27,4 +27,30 @@ server {
 
 	error_page 500 502 503 504 /custom_50x.html;
 }
+server {
+	# SSL configuration
+	
+	listen 443 ssl http2;
+	listen [::]:443 ssl http2;
+
+	server_name localhost;
+
+	root /var/www/site-b/html;
+	index index.html;
+
+	location / {
+		try_files $uri $uri/ =404;
+	}
+
+	ssl_certificate "/var/www/site-a/certificate.crt";
+	ssl_certificate_key "/var/www/site-a/private.key";
+	ssl_protocols TLSv1.2 TLSv1.3;
+	ssl_ciphers ECDH+AESGCM:ECDH+AES256:ECDH+AES128:DH+3DES:!ADH:!AECDH:!MD5;
+
+	ssl_session_cache shared:SSL:1m;
+	ssl_session_timeout  10m;
+	ssl_prefer_server_ciphers on;
+
+	error_page 500 502 503 504 /custom_50x.html;
+}
 

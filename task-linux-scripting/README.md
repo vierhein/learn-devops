@@ -13,3 +13,9 @@ Run: sudo chmod +x /path/to/script.sh <br>
 sudo useradd -p $(perl -e 'print crypt($ARGV[0], "password")' '123456') user-run <br>
 sudo chown user-run:user-run /path/to/script.sh <br>
 cp sudoers-user /etc/sudoers.d/
+
+
+127.0.0.1   site-a.local
+127.0.0.1   www.site-a.local
+127.0.0.1   site-b.local
+127.0.0.1   www.site-b.local
