@@ -17,7 +17,7 @@ sudo useradd -p $(perl -e 'print crypt($ARGV[0], "password")' '123456') user-b
 
 #site-a
 sudo mkdir -p /var/www/site-a/html
-sudo chown -R $USER:$USER /var/www/site-a/html
+sudo chown -R user-a:user-a /var/www/site-a/html
 sudo chmod -R 755 /var/www/site-a
 
 #site-b
@@ -25,18 +25,16 @@ sudo mkdir -p /var/www/site-b/html
 sudo chown -R user-b:user-b /var/www/site-b/html
 sudo chmod -R 755 /var/www/site-b
 
-sudo tee < index.php > /var/www/site-a/html/index.php # create server info page for site-a
-sudo tee < default > /etc/nginx/sites-available/default # setting nginx config
+sudo cat index.php | sudo tee /var/www/site-a/html/index.php # create server info page for site-a
+sudo cat default | sudo tee /etc/nginx/sites-available/default # setting nginx config
 
 # Add SSL certificate (Certbot)
-sudo snap install core; sudo snap refresh core
-sudo snap install --classic certbot
-sudo ln -s /snap/bin/certbot /usr/bin/certbot
 
-sudo certbot --nginx -d learndevopsandrei.ddns.net # get cert
-sudo tee < addssl >> /etc/nginx/sites-available/default # add nginx config for ssl
+
+#sudo certbot --nginx -d learndevopsandrei.ddns.net # get cert
+sudo cat addssl | sudo tee -a /etc/nginx/sites-available/default # add nginx config for ssl
 
 # Manage logs
-sudo tee < logrotateconf > /etc/logrotate.d/nginx
+sudo cat logrotateconf | sudo tee /etc/logrotate.d/nginx
 
 sudo systemctl restart nginx
