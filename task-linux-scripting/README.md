@@ -6,16 +6,18 @@ Follow the prompts to generate a new SSH key pair <br>
 Run: ssh-copy-id username@ip <br>
 Connect to server via ssh <br>
 
-2. Create user for run script.sh and set permissions to execute script<br>
+2. Clone project to server <br>
+
+3. Create user for run script.sh and set permissions to execute script<br>
 
 sudo useradd -p $(perl -e 'print crypt($ARGV[0], "password")' '123456') user-run <br>
 sudo cp sudoers-user /etc/sudoers.d/
 
-3. Change user and run script <br>
+4. Change user and run script <br>
 Run: su - user-run <br>
 Run: ./path-to-script/script.sh <br>
 
-4. Test local <br>
+5. Test local <br>
 127.0.0.1   site-a.local <br>
 127.0.0.1   www.site-a.local <br>
 127.0.0.1   site-b.local <br>
