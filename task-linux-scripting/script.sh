@@ -10,7 +10,7 @@ sudo ufw allow 80
 sudo ufw allow 443
 sudo ufw enable
 
-# Add users
+# Add users for sites administration
 sudo useradd -p $(perl -e 'print crypt($ARGV[0], "password")' '123456') user-a
 sudo useradd -p $(perl -e 'print crypt($ARGV[0], "password")' '123456') user-b
 
