@@ -26,13 +26,10 @@ sudo chmod -R 755 /var/www/site-b
 
 sudo cat index.php | sudo tee /var/www/site-a/html/index.php > /dev/null # create server info page for site-a
 sudo cp /var/www/html/index.nginx-debian.html /var/www/site-b/html/index.html # default server info page for site-b
-sudo cat default | sudo tee /etc/nginx/sites-available/default > /dev/null # setting nginx config
+sudo cat nginxconf | sudo tee /etc/nginx/sites-available/default > /dev/null # setting nginx config
 
 # Add SSL certificate (self-sign ssl)
-sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /var/www/site-a/private.key -out /var/www/site-a/certificate.crt
-
-# get cert
-sudo cat addssl | sudo tee -a /etc/nginx/sites-available/default > /dev/null # add nginx config for ssl
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt
 
 # Manage logs
 sudo cat logrotateconf | sudo tee /etc/logrotate.d/nginx > /dev/null
