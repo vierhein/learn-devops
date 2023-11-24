@@ -11,13 +11,15 @@ Connect to server via ssh <br>
 3. Create user for run script.sh and set permissions to execute script<br>
 
 sudo useradd -p $(perl -e 'print crypt($ARGV[0], "password")' '123456') user-run <br>
-sudo cp sudoers-user /etc/sudoers.d/
+sudo cp path-toproject/sudoers-user /etc/sudoers.d/
 
 4. Change user and run script <br>
 Run: su - user-run <br>
-Run: ./path-to-script/script.sh <br>
+Run: ./path-toprojec/script.sh <br>
 
 5. Test local <br>
+Add to /etc/hosts following lines: <br>
+
 127.0.0.1   site-a.local <br>
 127.0.0.1   www.site-a.local <br>
 127.0.0.1   site-b.local <br>
