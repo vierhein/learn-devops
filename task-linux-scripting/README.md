@@ -15,7 +15,7 @@ sudo cp path-toproject/sudoers-user /etc/sudoers.d/
 
 4. Change user and run script <br>
 Run: su - user-run <br>
-Run: ./path-toprojec/script.sh <br>
+Run: ./path-to-projec/script.sh <br>
 
 5. Test local <br>
 Add to /etc/hosts following lines: <br>
