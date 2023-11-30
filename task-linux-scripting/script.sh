@@ -25,7 +25,7 @@ done
 
 # Install web server and php
 sudo apt update
-sudo apt install nginx${vnginx} php-fpm${vphpfpm} openssl${vopenssl}
+sudo apt install -y nginx${vnginx} php-fpm${vphpfpm} openssl${vopenssl}
 
 # Configure firewall (allow SSH, HTTP, HTTPS)
 sudo ufw allow 22
@@ -47,14 +47,14 @@ sudo mkdir -p /var/www/site-b/html
 sudo chown -R user-b:user-b /var/www/site-b/html
 sudo chmod -R 755 /var/www/site-b
 
-sudo cat index.php | sudo tee /var/www/site-a/html/index.php > /dev/null # create server info page for site-a
+sudo cp index.php /var/www/site-a/html/index.php # create server info page for site-a
 sudo cp /var/www/html/index.nginx-debian.html /var/www/site-b/html/index.html # default server info page for site-b
-sudo cat nginxconf | sudo tee /etc/nginx/sites-available/default > /dev/null # setting nginx config
+sudo cp nginxconf /etc/nginx/sites-available/default # setting nginx config
 
 # Add SSL certificate (self-sign ssl)
 sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt
 
 # Manage logs
-sudo cat logrotateconf | sudo tee /etc/logrotate.d/nginx > /dev/null
+sudo cp logrotateconf /etc/logrotate.d/nginx
 
 sudo systemctl restart nginx
