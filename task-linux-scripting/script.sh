@@ -1,8 +1,31 @@
 #!/bin/bash
 
+# Set versions packages, default - latest
+while getopts ":n:p:s:" opt; do
+  case $opt in
+    n)
+      vnginx="=$OPTARG"
+      ;;
+    p)
+      vphpfpm="=$OPTARG"
+      ;;
+    s)
+      vopenssl="=$OPTARG"
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      exit 1
+      ;;
+    :)
+      echo "Option -$OPTARG requires an argument." >&2
+      exit 1
+      ;;
+  esac
+done
+
 # Install web server and php
 sudo apt update
-sudo apt install -y nginx php7.4-fpm openssl
+sudo apt install nginx${vnginx} php-fpm${vphpfpm} openssl${vopenssl}
 
 # Configure firewall (allow SSH, HTTP, HTTPS)
 sudo ufw allow 22
@@ -11,8 +34,8 @@ sudo ufw allow 443
 sudo ufw enable
 
 # Add users for sites administration
-sudo useradd -p $(perl -e 'print crypt($ARGV[0], "password")' '123456') user-a
-sudo useradd -p $(perl -e 'print crypt($ARGV[0], "password")' '123456') user-b
+sudo useradd -m user-a
+sudo useradd -m user-b
 
 #site-a
 sudo mkdir -p /var/www/site-a/html

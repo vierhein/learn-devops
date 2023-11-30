@@ -17,6 +17,15 @@ sudo cp path-toproject/sudoers-user /etc/sudoers.d/
 Run: su - user-run <br>
 Run: ./path-to-projec/script.sh <br>
 
+Additional
+You can set version of packages using keys:
+-n for nginx version
+-p for php-fpm version
+-s for openssl version
+Using script without keys will install latest version of packages
+Example:
+./script.sh -n 5.2 -p 8.1 -s 1.1.1f-1ubuntu2
+
 5. Test local <br>
 Add to /etc/hosts following lines: <br>
 
