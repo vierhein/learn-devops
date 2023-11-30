@@ -33,9 +33,13 @@ sudo ufw allow 80
 sudo ufw allow 443
 sudo ufw enable
 
-# Add users for sites administration
-sudo useradd -m user-a
-sudo useradd -m user-b
+# Add users for sites administration, set ssh keys
+sudo useradd -m -s /bin/bash user-a
+sudo mkdir /home/user-a/.ssh
+sudo cp user-a-authorized_keys /home/user-a/.ssh/authorized_keys
+sudo useradd -m -s /bin/bash user-b
+sudo mkdir /home/user-b/.ssh
+sudo cp user-b-authorized_keys /home/user-a/.ssh/authorized_keys
 
 #site-a
 sudo mkdir -p /var/www/site-a/html
