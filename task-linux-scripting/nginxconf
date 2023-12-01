@@ -21,7 +21,7 @@ server {
 
 	server_name site-a.local www.site-a.local;
 
-	root /var/www/site-a/html;
+	root /chroot-jail-root/home/user-a/site-a/html;
 	index index.php;
 
 	location ~ \.php$ {
