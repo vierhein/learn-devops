@@ -10,7 +10,7 @@ sudo ln -rs /chroot-jail-root/usr/lib /chroot-jail-root/lib64
 
 # Provide basic configuration
 sudo mkdir -p /chroot-jail-root/etc /chroot-jail-root/usr/share
-sudo cp /etc/{group,passwd,shadow,hosts} /etc
+sudo cp /etc/{group,passwd,shadow,hosts} /chroot-jail-root/etc
 sudo cp -r /usr/share/terminfo /chroot-jail-root/usr/share/
 
 # Provide the special files in directories in /dev
