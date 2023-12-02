@@ -86,7 +86,7 @@ sudo cp index.php $jailpath/home/user-a/site-a/html/index.php # create server in
 sudo chown -R user-a:user-a $jailpath/home/user-a/site-a/html
 
 #site-b
-sudo mkdir -p $jailpath/home/user-b/site-a/html
+sudo mkdir -p $jailpath/home/user-b/site-b/html
 sudo cp /var/www/html/index.nginx-debian.html $jailpath/home/user-b/site-b/html/index.html # default server info page for site-b
 sudo chown -R user-b:user-b $jailpath/home/user-b/site-b/html
 
