@@ -37,7 +37,7 @@ sudo ufw enable
 jailpath=/home/jail
 sudo mkdir -p $jailpath/usr/bin
 # Copy utils to chroot
-sudo cp /usr/bin/{bash,cat,ls,vi} $jailpath/usr/bin/
+sudo cp /usr/bin/{bash,cat,ls,touch,mkdir,vi} $jailpath/usr/bin/
 
 # Copy utils library to chroot
 sudo cp -r lib $jailpath/usr/
