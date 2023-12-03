@@ -106,4 +106,5 @@ sudo cp /home/reload-php $jailpath/home/user-a/
 sudo mount --bind /home/reload-php $jailpath/home/user-a/reload-php 
 sudo chown user-a:user-a /home/reload-php
 sudo cp daemon.sh /home/
-sudo /home/daemon.sh &
+namephp=$(ls /etc/init.d/ | grep php)
+sudo /home/daemon.sh $namephp &
