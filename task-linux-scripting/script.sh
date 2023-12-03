@@ -99,3 +99,11 @@ sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/privat
 sudo cp logrotateconf /etc/logrotate.d/nginx
 
 sudo systemctl restart nginx
+
+# Manage restart php in chroot
+sudo touch /home/reload-php
+sudo cp /home/reload-php $jailpath/home/user-a/
+sudo mount --bind /home/reload-php $jailpath/home/user-a/reload-php 
+sudo chown user-a:user-a /home/reload-php
+sudo cp daemon.sh /home/
+sudo /home/daemon.sh &
