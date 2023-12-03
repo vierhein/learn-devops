@@ -10,7 +10,7 @@ Connect to server via ssh <br>
 
 3. Create user for run script.sh and set permissions to execute script<br>
 
-sudo useradd -p $(perl -e 'print crypt($ARGV[0], "password")' '123456') user-run <br>
+sudo useradd user-run <br>
 sudo cp path-toproject/sudoers-user /etc/sudoers.d/
 
 4. Add public ssh keys for sites admins
