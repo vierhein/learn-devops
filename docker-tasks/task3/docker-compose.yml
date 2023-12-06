@@ -1,18 +1,36 @@
 version: '3'
 
 services:
-  flask-app:
+  python-app:
+    container_name: python-app
     build:
       context: python-app
-      dockerfile: Dockerfile
     ports:
       - "5000:5000"
+    depends_on:
+      - proxy
+      - cache
+      - database
+    cpu_percent: 10
+    mem_limit: 128m
 
-  nginx:
+  proxy:
+    container_name: proxy
     build:
       context: nginx
-      dockerfile: Dockerfile
     ports:
       - "80:80"
-    depends_on:
-      - flask-app
+    cpu_percent: 10
+    mem_limit: 128m
+
+  cache:
+    container_name: cache
+    image: redis
+    cpu_percent: 10
+    mem_limit: 128m
+
+  database:
+    container_name: database
+    image: postgres
+    cpu_percent: 10
+    mem_limit: 128m
