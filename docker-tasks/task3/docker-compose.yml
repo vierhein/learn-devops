@@ -2,35 +2,69 @@ version: '3'
 
 services:
   python-app:
-    container_name: python-app
     build:
       context: python-app
+    container_name: python-app
+    networks:
+      - network-app
     ports:
       - "5000:5000"
     depends_on:
       - proxy
       - cache
       - database
+      - fluentd
     cpu_percent: 10
     mem_limit: 128m
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: 172.19.0.2:24224
+        tag: python-app
 
   proxy:
-    container_name: proxy
     build:
       context: nginx
+    container_name: proxy
+    networks:
+      - network-app
     ports:
       - "80:80"
     cpu_percent: 10
     mem_limit: 128m
+    logging:
+      driver: journald
 
   cache:
-    container_name: cache
     image: redis
+    container_name: cache
+    networks:
+      - network-app
     cpu_percent: 10
     mem_limit: 128m
+    logging:
+      driver: journald
 
   database:
-    container_name: database
     image: postgres
+    container_name: database
+    networks:
+      - network-app
     cpu_percent: 10
     mem_limit: 128m
+    logging:
+      driver: journald
+
+  fluentd:
+    image: fluentd
+    container_name: fluentd
+    networks:
+      - network-app
+    volumes:
+      - ./fluent.conf:/fluentd/etc/fluent.conf
+    logging:
+      driver: journald
+
+networks:
+  network-app:
+    driver: bridge
