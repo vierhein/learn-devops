@@ -1,5 +1,29 @@
 { 
     "linux64": {
+        "121.0.6111.0": {
+            "position": 1222594, 
+            "download_position": 1222597, 
+            "download_prefix": "https://www.googleapis.com/storage/v1/b/chromium-browser-snapshots/o?delimiter=/&prefix=Linux_x64/1192597/&fields=items(kind,mediaLink,metadata,name,size,updated),kind,prefixes,nextPageToken", 
+            "position_url": "https://omahaproxy.appspot.com/deps.json?version=118.0.5993.88", 
+            "download_url": "https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2F1220203%2Fchrome-linux.zip?generation=1699273193665429&alt=media", 
+            "driver_download_url": "https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2F1192597%2Fchromedriver_linux64.zip?generation=1693941365577901&alt=media"
+        },
+        "120.0.6074.0": {
+            "position": 1212594, 
+            "download_position": 1212597, 
+            "download_prefix": "https://www.googleapis.com/storage/v1/b/chromium-browser-snapshots/o?delimiter=/&prefix=Linux_x64/1192597/&fields=items(kind,mediaLink,metadata,name,size,updated),kind,prefixes,nextPageToken", 
+            "position_url": "https://omahaproxy.appspot.com/deps.json?version=118.0.5993.88", 
+            "download_url": "https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2F1211241%2Fchrome-linux.zip?generation=1697593240931630&alt=media", 
+            "driver_download_url": "https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2F1192597%2Fchromedriver_linux64.zip?generation=1693941365577901&alt=media"
+        },
+        "119.0.6024.0": {
+            "position": 1202594, 
+            "download_position": 1202597, 
+            "download_prefix": "https://www.googleapis.com/storage/v1/b/chromium-browser-snapshots/o?delimiter=/&prefix=Linux_x64/1192597/&fields=items(kind,mediaLink,metadata,name,size,updated),kind,prefixes,nextPageToken", 
+            "position_url": "https://omahaproxy.appspot.com/deps.json?version=118.0.5993.88", 
+            "download_url": "https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2F1200059%2Fchrome-linux.zip?generation=1695360933804931&alt=media", 
+            "driver_download_url": "https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2F1192597%2Fchromedriver_linux64.zip?generation=1693941365577901&alt=media"
+        },
         "118.0.5993.88": {
             "position": 1192594, 
             "download_position": 1192597, 
