@@ -11,7 +11,6 @@ services:
     ports:
       - "5000:5000"
     depends_on:
-      - proxy
       - cache
       - database
       - fluentd
@@ -32,6 +31,8 @@ services:
       - network-app
     ports:
       - "80:80"
+    depends_on:
+      - python-app
     cpu_percent: 10
     mem_limit: 128m
     volumes:
