@@ -1,7 +1,7 @@
-# need version?
-FROM python 
+# Add version
+FROM python:latest 
 ARG VENV_DIR=/venv
-# Edit tabs, delete slash
+# Edit tabs
 LABEL maintainer="Valera" \
       os='Debian'
  
@@ -10,18 +10,19 @@ ENV USER_ID=500 \
     USER_NAME=docker \
     VENV_DIR=${VENV_DIR}
 
-# Replace add to copy? 
-ADD ./object.tar.gz $VENV_DIR
- 
+# Replace add to copy 
+COPY ./object.tar.gz $VENV_DIR
+
+RUN groupadd -r ${USER_NAME} -g ${GROUP_ID} && useradd -u ${USER_ID} -r -g ${GROUP_ID} ${USER_NAME}
+# Switch user must be after adding 
 USER ${USER_NAME}
-# Compare layers using 1 run
-RUN groupadd -r ${USER_NAME} -g ${GROUP_ID} && useradd -u ${USER_ID} -r -g ${GROUP_ID} ${USER_NAME} \
-    && apt update && apt upgrade -y \
-    && python3 -m venv $VENV_DIR \
-    && chown -R $USER_ID:$GROUP_ID $VENV_DIR \
-    && apt-get clean && rm -rf / var/cache/apt/archives \
-    # Replace unzip to tar?
-    && unzip $VENV_DIR/object.tar.gz
+RUN apt update && apt upgrade -y
+# Edit tabs
+RUN python3 -m venv $VENV_DIR && \
+    chown -R $USER_ID:$GROUP_ID $VENV_DIR 
+RUN apt-get clean && rm -rf / var/cache/apt/archives
+# Replace unzip to tar
+RUN tar -xzvf $VENV_DIR/object.tar.gz
  
 WORKDIR $VENV_DIR
 EXPOSE 8080
