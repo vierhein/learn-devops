@@ -1,5 +1,5 @@
 # Add version
-FROM python:latest 
+FROM python:3.9 
 ARG VENV_DIR=/venv
 # Edit tabs
 LABEL maintainer="Valera" \
