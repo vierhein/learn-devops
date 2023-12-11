@@ -1,6 +1,6 @@
 FROM debian:12.2
 
-ARG CHROMIUM_VERSION
+ARG CHROMIUM_VERSION=121.0.6111.0
 
 RUN apt-get update && apt-get install -y \
     apache2 \
