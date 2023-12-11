@@ -70,12 +70,18 @@ services:
     container_name: database
     networks:
       - network-app
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: db_prod
+    ports:
+      - "5432:5432"
     cpu_percent: 10
     mem_limit: 128m
     logging:
       driver: journald
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready", "-d", "db_prod"]
+      test: ["CMD", "pg_isready", "-d", "db_prod"]
       interval: 5s
       timeout: 10s
       retries: 3
@@ -92,6 +98,11 @@ services:
       - ./fluent.conf:/fluentd/etc/fluent.conf
     logging:
       driver: journald
+    healthcheck:
+      test: [ "CMD", "nc", "-u", "-z", "-v", "localhost", "24224" ]
+      interval: 5s
+      timeout: 10s
+      retries: 3
 
 networks:
   network-app:
