@@ -5,20 +5,27 @@ import re
 
 TOKEN = os.getenv("TOKEN")
 HEADERS = {'Authorization': f'Bearer {TOKEN}'}
-
+json_file_path = 'output.txt'
 
 def get_data():
-    repo_url = "https://api.github.com/repos/chromium/chromium/tags?page=15"
-    response = requests.get(repo_url, headers=HEADERS)
-    json_data = response.json()
-    with open('output.txt', "w") as file:
-        json.dump(json_data, file)
-    return json_data
+    with open(json_file_path, "w") as f:
+        pass
+    for i in range(1, 15):
+        repo_url = "https://api.github.com/repos/chromium/chromium/tags?page={i}"
+        response = requests.get(repo_url, headers=HEADERS)
+        json_data = response.json()
+        with open(json_file_path, "a") as file:
+            json.dump(json_data, file)
+        return json_data
 
 def get_position():
-    json_data = get_data()
+    new_json = {
+        "linux64": {}
+    }  
+    with open(json_file_path, 'r') as file:
+        json_data = json.load(file)
     for entry in json_data:
-        name_value = entry.get('name', '')
+        version = entry.get('name', '')
         commit_url = entry.get('commit', {}).get('url', '')
 
         if commit_url:
@@ -34,8 +41,14 @@ def get_position():
                     
                     if match:
                         # Extract the numbers after "refs/heads/main@{#}"
-                        result = match.group(1)
-                        print(result)
+                        position = match.group(1)
+                        # print(position)
+                        def add_version(new_json, version, position):
+                            new_json["linux64"][version] = {
+                                "position": position
+                            }
+                        add_version(new_json, version, position)
+
                     else:
                         print("Pattern not found.")
 
@@ -46,5 +59,9 @@ def get_position():
                 print(f"Error during request: {e}")
         else:
             print("Commit URL not found in the JSON data.")
+    with open('new.json', "w") as json_file:
+        json.dump(new_json, json_file, indent=4)
 
+
+get_data()
 get_position()
