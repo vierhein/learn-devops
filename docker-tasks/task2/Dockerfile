@@ -20,11 +20,12 @@ RUN apt-get install -y ca-certificates fonts-liberation libappindicator3-1 \
 
 # Parse the json and download
 WORKDIR /opt
-COPY chromium.stable.json .
-RUN DOWNLOAD_LINK=$(jq -r ".linux64.\"${CHROMIUM_VERSION}\".download_url" chromium.stable.json) \
+RUN wget --no-check-certificate -O chromium.version.json https://github.com/vikyd/chromium-history-version-position/raw/master/json/ver-pos-os/version-position-Linux_x64.json \
+    && POSITION=$(jq -r --arg version "$CHROMIUM_VERSION" '.[$version]' "chromium.version.json") \
+    && DOWNLOAD_LINK=https://commondatastorage.googleapis.com/chromium-browser-snapshots/Linux_x64/${POSITION}/chrome-linux.zip \
     && wget --no-check-certificate -O chromium.zip ${DOWNLOAD_LINK} \
     && unzip chromium.zip \
-    && rm -f chromium.zip chromium.stable.json \
+    && rm -f chromium.zip chromium.version.json \
     # Configure --no-sandbox and --ignore-certificate-errors
     && sed -i 's/\"$@\"/--no-sandbox --ignore-certificate-errors \"$@\"/' chrome-linux/chrome-wrapper \
     && ln -s /opt/chrome-linux/chrome-wrapper /usr/bin/chromium
