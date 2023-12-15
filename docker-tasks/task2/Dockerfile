@@ -32,4 +32,4 @@ RUN VERSION_DATA=$(curl https://api.github.com/repos/chromium/chromium/git/refs/
     && ln -s /opt/chrome-linux/chrome-wrapper /usr/bin/chromium
 
 # Delete unused dependencis
-RUN apt-get remove -y jq unzip
+RUN apt-get remove -y jq unzip curl
