@@ -6,8 +6,8 @@ RUN apt-get update && apt-get install -y \
     apache2 \
     jq \
     php \
-    unzip \ 
-    wget
+    unzip \
+    curl
 
 # Install dependencis for chromium
 RUN apt-get install -y ca-certificates fonts-liberation libappindicator3-1 \
@@ -20,10 +20,11 @@ RUN apt-get install -y ca-certificates fonts-liberation libappindicator3-1 \
 
 # Parse the json and download
 WORKDIR /opt
-RUN wget --no-check-certificate -O chromium.version.json https://github.com/vikyd/chromium-history-version-position/raw/master/json/ver-pos-os/version-position-Linux_x64.json \
-    && POSITION=$(jq -r --arg version "$CHROMIUM_VERSION" '.[$version]' "chromium.version.json") \
+RUN VERSION_DATA=$(curl https://api.github.com/repos/chromium/chromium/git/refs/tags/${CHROMIUM_VERSION}) \
+    && COMMIT_URL=$(echo $VERSION_DATA | jq -r '.object.url') \
+    && POSITION=$(curl $COMMIT_URL | grep Cr-Branched-From: | grep -oP '/heads/main@\{#\K[^}]+') \
     && DOWNLOAD_LINK=https://commondatastorage.googleapis.com/chromium-browser-snapshots/Linux_x64/${POSITION}/chrome-linux.zip \
-    && wget --no-check-certificate -O chromium.zip ${DOWNLOAD_LINK} \
+    && curl -o chromium.zip ${DOWNLOAD_LINK} \
     && unzip chromium.zip \
     && rm -f chromium.zip chromium.version.json \
     # Configure --no-sandbox and --ignore-certificate-errors
@@ -31,4 +32,4 @@ RUN wget --no-check-certificate -O chromium.version.json https://github.com/viky
     && ln -s /opt/chrome-linux/chrome-wrapper /usr/bin/chromium
 
 # Delete unused dependencis
-RUN apt-get remove -y jq unzip wget
+RUN apt-get remove -y jq unzip
