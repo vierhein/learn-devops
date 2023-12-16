@@ -14,8 +14,8 @@ services:
       - cache
       - database
       - fluentd
-    cpu_percent: 10
-    mem_limit: 128m
+    cpu_percent: ${PYTHON_CPU_PERCENT}
+    mem_limit: ${PYTHON_MEM_LIMIT}
     links: 
       - fluentd
     logging:
@@ -38,8 +38,8 @@ services:
       - "80:80"
     depends_on:
       - python-app
-    cpu_percent: 10
-    mem_limit: 128m
+    cpu_percent: ${PROXY_CPU_PERCENT}
+    mem_limit: ${PROXY_MEM_LIMIT}
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
     logging:
@@ -55,8 +55,8 @@ services:
     container_name: cache
     networks:
       - network-app
-    cpu_percent: 10
-    mem_limit: 128m
+    cpu_percent: ${CACHE_CPU_PERCENT}
+    mem_limit: ${CACHE_MEM_LIMIT}
     logging:
       driver: journald
     healthcheck:
@@ -71,13 +71,13 @@ services:
     networks:
       - network-app
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
-      POSTGRES_DB: db_prod
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - "5432:5432"
-    cpu_percent: 10
-    mem_limit: 128m
+    cpu_percent: ${DATABASE_CPU_PERCENT}
+    mem_limit: ${DATABASE_MEM_LIMIT}
     logging:
       driver: journald
     healthcheck:
@@ -92,6 +92,8 @@ services:
     ports:
       - "24224:24224"
       - "24224:24224/udp"
+    cpu_percent: ${FLUENTD_CPU_PERCENT}
+    mem_limit: ${FLUENTD_MEM_LIMIT}
     networks:
       - network-app
     volumes:
