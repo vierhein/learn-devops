@@ -38,8 +38,6 @@ services:
       - python-app
     cpu_percent: ${PROXY_CPU_PERCENT}
     mem_limit: ${PROXY_MEM_LIMIT}
-    volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf
     logging:
       driver: journald
     healthcheck:
@@ -94,8 +92,6 @@ services:
     mem_limit: ${FLUENTD_MEM_LIMIT}
     networks:
       - network-app
-    volumes:
-      - ./fluent.conf:/fluentd/etc/fluent.conf
     logging:
       driver: journald
     healthcheck:
