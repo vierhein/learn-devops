@@ -7,7 +7,8 @@ services:
     container_name: python-app
     hostname: python-app
     networks:
-      - network-app
+      - frontend
+      - backend
     ports:
       - "5000:5000"
     depends_on:
@@ -33,7 +34,7 @@ services:
     image: nginx
     container_name: proxy
     networks:
-      - network-app
+      - frontend
     ports:
       - "80:80"
     depends_on:
@@ -54,7 +55,7 @@ services:
     image: redis
     container_name: cache
     networks:
-      - network-app
+      - backend
     cpu_percent: ${CACHE_CPU_PERCENT}
     mem_limit: ${CACHE_MEM_LIMIT}
     logging:
@@ -69,7 +70,7 @@ services:
     image: postgres
     container_name: database
     networks:
-      - network-app
+      - backend
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -95,7 +96,7 @@ services:
     cpu_percent: ${FLUENTD_CPU_PERCENT}
     mem_limit: ${FLUENTD_MEM_LIMIT}
     networks:
-      - network-app
+      - backend
     logging:
       driver: journald
     volumes:
@@ -107,5 +108,5 @@ services:
       retries: 3
 
 networks:
-  network-app:
-    driver: bridge
+  frontend:
+  backend:
