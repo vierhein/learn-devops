@@ -10,7 +10,7 @@ services:
       - frontend
       - backend
     ports:
-      - "5000:5000"
+      - "${PYTHON_APP_PORT}:5000"
     depends_on:
       - cache
       - database
@@ -36,7 +36,7 @@ services:
     networks:
       - frontend
     ports:
-      - "80:80"
+      - "${PROXY_PORT}:80"
     depends_on:
       - python-app
     cpu_percent: ${PROXY_CPU_PERCENT}
@@ -46,7 +46,7 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
     healthcheck:
-      test: curl -sS http://127.0.0.1 || exit 1
+      test: curl -sS http://127.0.0.1/health || exit 1
       interval: 5s
       timeout: 10s
       retries: 3
@@ -56,6 +56,8 @@ services:
     container_name: cache
     networks:
       - backend
+    ports:
+      - "${CACHE_PORT}:6379"
     cpu_percent: ${CACHE_CPU_PERCENT}
     mem_limit: ${CACHE_MEM_LIMIT}
     logging:
@@ -76,7 +78,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - "5432:5432"
+      - "${DATABASE_PORT}:5432"
     cpu_percent: ${DATABASE_CPU_PERCENT}
     mem_limit: ${DATABASE_MEM_LIMIT}
     logging:
@@ -91,12 +93,12 @@ services:
     image: fluentd
     container_name: fluentd
     ports:
-      - "24224:24224"
-      - "24224:24224/udp"
+      - "${FLUENTD_PORT}:24224"
+      - "${FLUENTD_PORT}:24224/udp"
     cpu_percent: ${FLUENTD_CPU_PERCENT}
     mem_limit: ${FLUENTD_MEM_LIMIT}
     networks:
-      - backend
+      - frontend
     logging:
       driver: journald
     volumes:
@@ -110,3 +112,4 @@ services:
 networks:
   frontend:
   backend:
+    internal: true
