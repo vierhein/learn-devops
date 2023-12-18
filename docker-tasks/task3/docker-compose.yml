@@ -98,7 +98,7 @@ services:
     cpu_percent: ${FLUENTD_CPU_PERCENT}
     mem_limit: ${FLUENTD_MEM_LIMIT}
     networks:
-      - frontend
+      - backend
     logging:
       driver: journald
     volumes:
