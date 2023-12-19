@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: simple-app-tomcat
+spec:
+  containers:
+  - name: simple-app-tomcat-container
+    image: localhost:5000/tomcat:latest
+    imagePullPolicy: Never
+    ports:
+    - containerPort: 8080
