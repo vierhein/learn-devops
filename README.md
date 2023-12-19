@@ -1,2 +1,2 @@
 # devops
-k8s
+task2-kuber
