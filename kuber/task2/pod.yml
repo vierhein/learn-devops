@@ -5,7 +5,33 @@ metadata:
 spec:
   containers:
   - name: simple-app-tomcat-container
-    image: localhost:5000/tomcat:latest
-    imagePullPolicy: Never
+    image: tomcat
     ports:
     - containerPort: 8080
+    volumeMounts:
+    - name: shared-data
+      mountPath: /usr/local/tomcat/webapps/
+
+  initContainers:
+  - name: download-container
+    image: busybox
+    command: ['wget', 'https://tomcat.apache.org/tomcat-7.0-doc/appdev/sample/sample.war', '-O', '/source/sample.war']
+    volumeMounts:
+    - name: shared-data
+      mountPath: /source
+  
+  volumes:
+  - name: shared-data
+    emptyDir: {}
+
+
+# apiVersion: v1
+# kind: Pod
+# metadata:
+#   name: proxy-nginx
+# spec:
+#   containers:
+#   - name: sproxy-nginx-container
+#     image: nginx
+#     ports:
+#     - containerPort: 80
