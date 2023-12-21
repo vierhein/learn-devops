@@ -29,19 +29,18 @@ kind: ConfigMap
 metadata:
   name: nginx-conf-file
 data: 
-  nginx.conf: |
+  default.conf: |
     server {
       listen 80;
       server_name localhost;
 
       location / {
-          root /var/www/html;
-          index index.html index.htm index.nginx-debian.html;
+          root   /usr/share/nginx/html;
+          index  index.html index.htm;
       }
 
       location /sample {
-          root /var/www/html;
-          index index.html index.htm index.nginx-debian.html;
+          proxy_pass http://www.example.com/;
       }
     }
 ---
@@ -59,8 +58,8 @@ spec:
         - containerPort: 80
       volumeMounts:
         - name: nginx-conf
-          mountPath: /etc/nginx/conf.d/nginx.conf
-          subPath: nginx.conf
+          mountPath: /etc/nginx/conf.d/default.conf
+          subPath: default.conf
           readOnly: true
   volumes:
     - name: nginx-conf
