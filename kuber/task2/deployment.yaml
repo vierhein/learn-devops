@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-app-tomcat
+  labels:
+    app: simple-app-tomcat-pod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: simple-app-tomcat-pod
+  template:
+    metadata:
+      labels:
+        app: simple-app-tomcat-pod
+    spec:
+      containers:
+        - name: simple-app-tomcat-container
+          image: tomcat
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: shared-data
+              mountPath: /usr/local/tomcat/webapps/
+      initContainers:
+        - name: download-container
+          image: busybox
+          command: ['wget', 'https://tomcat.apache.org/tomcat-7.0-doc/appdev/sample/sample.war', '-O', '/source/sample.war']
+          volumeMounts:
+            - name: shared-data
+              mountPath: /source
+      volumes:
+        - name: shared-data
+          emptyDir: {}
