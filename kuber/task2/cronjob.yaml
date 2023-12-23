@@ -1,0 +1,74 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: getting-pods
+  namespace: default
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: getting-pods
+  namespace: default
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "patch", "list", "watch", "delete"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: getting-pods
+  namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: getting-pods
+subjects:
+  - kind: ServiceAccount
+    name: getting-pods
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: getting-count-restart
+  namespace: default
+spec:
+  concurrencyPolicy: Forbid
+  schedule: "* * * * *"
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        spec:
+          serviceAccountName: getting-pods
+          restartPolicy: Never
+          containers:
+            - name: kubectl
+              image: bitnami/kubectl
+              command:
+                - sh
+                - -c
+                - kubectl get po | awk '$4>0'
+
+# apiVersion: batch/v1
+# kind: CronJob
+# metadata:
+#   name: kubectl
+# spec:
+#   schedule: "* * * * *"
+#   jobTemplate:
+#     spec:
+#       template:
+#         spec:
+#           containers:
+#             - name: kubectl
+#               image: bitnami/kubectl
+#               command:
+#                 - sh
+#                 - -c
+#                 - kubectl get po | awk '$4>0'
+#           restartPolicy: OnFailure
+# ---
