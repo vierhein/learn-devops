@@ -51,7 +51,8 @@ spec:
               command:
                 - sh
                 - -c
-                - kubectl get po | awk '$4>0'
+                - ARR_PODS=$(kubectl get po | awk '$4>0' | awk '{print $1}') &&
+                  curl -s -X POST -d "$ARR_PODS pods restart count greater than threshold" "$API_URL"
 
 # apiVersion: batch/v1
 # kind: CronJob
