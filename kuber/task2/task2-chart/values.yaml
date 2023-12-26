@@ -8,14 +8,12 @@ replicaCountTomcat: 1
 imageTomact:
   repository: tomcat
   tag: 10
-  pullPolicy: IfNotPresent
 sourceURL: https://tomcat.apache.org/tomcat-7.0-doc/appdev/sample/sample.war
 
 replicaCountNginx: 1
 imageNginx:
   repository: nginx
   tag: 1.25.3
-  pullPolicy: IfNotPresent
 
 imagePullSecrets: []
 nameOverride: ""
