@@ -14,7 +14,7 @@ metadata:
 rules:
   - apiGroups: [""]
     resources: ["pods"]
-    verbs: ["get", "patch", "list", "watch", "delete"]
+    verbs: ["get", "patch", "list", "watch"]
 
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -48,10 +48,13 @@ spec:
           containers:
             - name: kubectl
               image: jitesoft/kubectl
+              env:
+                - name: API_URL
+                  value: "https://webhook.site/351b2adf-aaf6-44ab-b24b-f572d3c82610"
+                - name: THRESHOLD
+                  value: "1"
               command:
                 - sh
                 - -c
-                - THRESHOLD=1 &&
-                  API_URL="https://webhook.site/351b2adf-aaf6-44ab-b24b-f572d3c82610" &&
-                  ARR_PODS=$(kubectl get pods | awk -v THR="$THRESHOLD" '$4>THR' | awk '{print $1}' | awk 'NR > 1 { print }') &&
-                  [ -n "$ARR_PODS" ] && curl -s -X POST -d "pods restart count greater than $THRESHOLD\n $ARR_PODS" "$API_URL" || echo "OK"
+                - ARR_PODS=$(kubectl get pods | awk -v THR="$THRESHOLD" '$4>THR' | awk '{print $1}' | awk 'NR > 1 { print }') &&
+                  [ -n "$ARR_PODS" ] && curl -s -X POST -d "pods restart count greater than $THRESHOLD $ARR_PODS" "$API_URL" || echo "OK"
