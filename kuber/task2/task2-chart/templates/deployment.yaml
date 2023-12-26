@@ -6,6 +6,8 @@ metadata:
     app: simple-app-tomcat-pod
 spec:
   replicas: {{ .Values.replicaCountTomcat }}
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: simple-app-tomcat-pod
@@ -42,6 +44,8 @@ metadata:
     app: proxy-nginx-pod
 spec:
   replicas: {{ .Values.replicaCountNginx }}
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: proxy-nginx-pod
