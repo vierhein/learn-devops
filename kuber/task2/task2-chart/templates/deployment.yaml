@@ -6,7 +6,7 @@ metadata:
   labels:
     app: simple-app-tomcat-pod
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.replicaCountTomcat }}
   selector:
     matchLabels:
       app: simple-app-tomcat-pod
@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: simple-app-tomcat-container
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.imageTomact.repository }}:{{ .Values.imageTomact.tag }}"
           ports:
             - containerPort: 8080
           volumeMounts:
@@ -42,7 +42,7 @@ metadata:
   labels:
     app: proxy-nginx-pod
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCountNginx }}
   selector:
     matchLabels:
       app: proxy-nginx-pod
@@ -53,7 +53,7 @@ spec:
     spec:
       containers:
         - name: proxy-nginx-container
-          image: nginx
+          image: "{{ .Values.imageNginx.repository }}:{{ .Values.imageNginx.tag }}"
           ports:
             - containerPort: 80
           volumeMounts:
