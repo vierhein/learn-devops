@@ -1,4 +1,3 @@
----
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -50,7 +49,7 @@ spec:
               image: jitesoft/kubectl
               env:
                 - name: API_URL
-                  value: "https://webhook.site/351b2adf-aaf6-44ab-b24b-f572d3c82610"
+                  value: "https://example-api.com"
                 - name: THRESHOLD
                   value: "1"
               command:
