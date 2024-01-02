@@ -1,0 +1,74 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pod-reader
+  namespace: default
+rules:
+  - apiGroups: [ "" ]
+    resources: [ "pods", "services"]
+    verbs: [ "get", "list", "watch"]
+  - apiGroups: [ "extensions" ]
+    resources: [ "deployments" ]
+    verbs: [ "get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: default-pod-reader
+  namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: pod-reader
+subjects:
+  - kind: ServiceAccount
+    name: default
+    namespace: default
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: script-file
+data: 
+  script.sh: |
+      API_URL="https://api.telegram.org/bot6509396285:AAHVAbVFEQyQkPycJYuaSWmpXI9FMAbMoro/sendMessage"
+      THRESHOLD=1
+      apk add curl jq &&
+      curl "https://${KUBERNETES_SERVICE_HOST}:${KUBERNETES_SERVICE_PORT}/api/v1/namespaces/default/pods?limit=500" \
+      --cacert /var/run/secrets/kubernetes.io/serviceaccount/ca.crt \
+      --header "Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)" > output
+      paste <(cat output | jq '.items[].metadata.name') <(cat output | jq '.items[].status.containerStatuses[].restartCount') | awk '{printf "%-40s %-40s\n", $1, $2}' > columns
+      ARR_PODS=$(cat columns | awk -v THR="$THRESHOLD" '$2>THR' | awk '{print $1}') && \
+      [ -n "$ARR_PODS" ] && curl -X POST "$API_URL" -d "chat_id=-1002012860719&text=pods restart count greater than $THRESHOLD $ARR_PODS" || echo "OK"
+
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: getting-count-restart
+  namespace: default
+spec:
+  concurrencyPolicy: Forbid
+  schedule: "* * * * *"
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: alpine-container
+              image: alpine
+              command:
+                - sh
+                - /tmp/script.sh
+              volumeMounts:
+                - name: script
+                  mountPath: /tmp/script.sh
+                  subPath: script.sh
+                  readOnly: true
+          volumes:
+            - name: script
+              configMap:
+                name: script-file
