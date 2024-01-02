@@ -1,0 +1,36 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pod-reader
+  namespace: default
+rules:
+- apiGroups: [ "" ]
+  resources: [ "pods", "services"]
+  verbs: [ "get", "list", "watch"]
+- apiGroups: [ "extensions" ]
+  resources: [ "deployments" ]
+  verbs: [ "get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: default-pod-reader
+  namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: pod-reader
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: default
+
+
+# curl https://${KUBERNETES_SERVICE_HOST}:${KUBERNETES_SERVICE_PORT}/api/v1/namespaces/default/pods?limit=500 \
+#   --cacert /var/run/secrets/kubernetes.io/serviceaccount/ca.crt \
+#   --header "Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)" > 1.txt
+
+# jq '.items[].status.containerStatuses[].restartCount'
+# jq '.items[].metadata.name'
+# paste <(cat 1.txt | jq '.items[].metadata.name') <(cat 1.txt | jq '.items[].status.containerStatuses[].restartCount') | pr -t
