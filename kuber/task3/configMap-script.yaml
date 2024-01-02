@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: script-file
+data: 
+  script.sh: |
+      API_URL="https://api.telegram.org/bot6509396285:AAHVAbVFEQyQkPycJYuaSWmpXI9FMAbMoro/sendMessage"
+      THRESHOLD=1
+      apk add curl jq &&
+      curl "https://${KUBERNETES_SERVICE_HOST}:${KUBERNETES_SERVICE_PORT}/api/v1/namespaces/default/pods?limit=500" \
+      --cacert /var/run/secrets/kubernetes.io/serviceaccount/ca.crt \
+      --header "Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)" > output
+      paste <(cat output | jq '.items[].metadata.name') <(cat output | jq '.items[].status.containerStatuses[].restartCount') | awk '{printf "%-40s %-40s\n", $1, $2}' > columns
+      ARR_PODS=$(cat columns | awk -v THR="$THRESHOLD" '$2>THR' | awk '{print $1}') && \
+      [ -n "$ARR_PODS" ] && curl -X POST "$API_URL" -d "chat_id=-1002012860719&text=pods restart count greater than $THRESHOLD $ARR_PODS" || echo "OK"

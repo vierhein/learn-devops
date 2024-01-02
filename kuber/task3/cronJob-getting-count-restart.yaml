@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: getting-count-restart
+  namespace: default
+spec:
+  concurrencyPolicy: Forbid
+  schedule: "* * * * *"
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: alpine-container
+              image: alpine
+              command:
+                - sh
+                - /tmp/script.sh
+              volumeMounts:
+                - name: script
+                  mountPath: /tmp/script.sh
+                  subPath: script.sh
+                  readOnly: true
+          volumes:
+            - name: script
+              configMap:
+                name: script-file
