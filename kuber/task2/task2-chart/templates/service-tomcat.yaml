@@ -7,6 +7,6 @@ spec:
     {{ .Values.labelsTomcat.key }}: {{ .Values.labelsTomcat.value }}
   ports:
     - protocol: TCP
-      port: 8080
+      port: {{ .Values.serviceTomcat.port }}
       targetPort: 8080
-  type: ClusterIP
+  type: {{ .Values.serviceTomcat.type }}

@@ -16,7 +16,7 @@ imageTomact:
   tag: 10
 sourceURL: https://tomcat.apache.org/tomcat-7.0-doc/appdev/sample/sample.war
 
-# proxy-service/values.yaml
+# proxy-nginx-chart/values.yaml
 deploymentNameNginx: proxy-nginx
 replicaCountNginx: 1
 labelsNginx:
@@ -26,8 +26,16 @@ imageNginx:
   repository: nginx
   tag: 1.25.3
 
-service:
-  type: ClusterIP
+configMapNginxName: nginx-conf-file
+
+volumeNginxName: nginx-conf
+volumeTomcatName: shared-data
+
+serviceNginx:
+  type: NodePort
   port: 80
 
+serviceTomcat:
+  type: ClusterIP
+  port: 80
 

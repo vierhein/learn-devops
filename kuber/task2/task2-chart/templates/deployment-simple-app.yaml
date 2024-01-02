@@ -22,16 +22,16 @@ spec:
           ports:
             - containerPort: 8080
           volumeMounts:
-            - name: shared-data
+            - name: {{ .Values.volumeTomcatName }}
               mountPath: /usr/local/tomcat/webapps/
       initContainers:
         - name: download-container
           image: busybox
           command: ['wget', '{{ .Values.sourceURL }}', '-O', '/source/sample.war']
           volumeMounts:
-            - name: shared-data
+            - name: {{ .Values.volumeTomcatName }}
               mountPath: /source
       volumes:
-        - name: shared-data
+        - name: {{ .Values.volumeTomcatName }}
           emptyDir: {}
 

@@ -7,6 +7,6 @@ spec:
     {{ .Values.labelsNginx.key }}: {{ .Values.labelsNginx.value }}
   ports:
     - protocol: TCP
-      port: 80
+      port: {{ .Values.serviceNginx.port }}
       targetPort: 80
-  type: NodePort
+  type: {{ .Values.serviceNginx.type }}
