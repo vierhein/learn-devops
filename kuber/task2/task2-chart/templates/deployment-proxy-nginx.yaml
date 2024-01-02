@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.deploymentNameNginx }}
+  labels:
+    {{ .Values.labelsNginx.key }}: {{ .Values.labelsNginx.value }}
+spec:
+  replicas: {{ .Values.replicaCountNginx }}
+  strategy:
+    type: {{ .Values.typeDeploymentStrategy }}
+  selector:
+    matchLabels:
+      {{ .Values.labelsNginx.key }}: {{ .Values.labelsNginx.value }}
+  template:
+    metadata:
+      labels:
+        {{ .Values.labelsNginx.key }}: {{ .Values.labelsNginx.value }}
+    spec:
+      containers:
+        - name: proxy-nginx-container
+          image: "{{ .Values.imageNginx.repository }}:{{ .Values.imageNginx.tag }}"
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: nginx-conf
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: default.conf
+              readOnly: true
+      volumes:
+        - name: nginx-conf
+          configMap:
+            name: nginx-conf-file
