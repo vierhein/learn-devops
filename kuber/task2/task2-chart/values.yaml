@@ -12,9 +12,16 @@ labelsTomcat:
   value: simple-app-tomcat-pod
 
 imageTomact:
+  containerName: simple-app-tomcat-container
   repository: tomcat
   tag: 10
 sourceURL: https://tomcat.apache.org/tomcat-7.0-doc/appdev/sample/sample.war
+
+initTomcatContainer: 
+  containerName: download-container
+  repository: busybox
+  tag: 1.36
+
 
 # proxy-nginx-chart/values.yaml
 deploymentNameNginx: proxy-nginx
@@ -23,6 +30,7 @@ labelsNginx:
   key: app
   value: proxy-nginx-pod
 imageNginx:
+  containerName: proxy-nginx-container
   repository: nginx
   tag: 1.25.3
 

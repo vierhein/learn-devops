@@ -17,7 +17,7 @@ spec:
         {{ .Values.labelsNginx.key }}: {{ .Values.labelsNginx.value }}
     spec:
       containers:
-        - name: proxy-nginx-container
+        - name: {{ .Values.imageNginx.containerName }}
           image: "{{ .Values.imageNginx.repository }}:{{ .Values.imageNginx.tag }}"
           ports:
             - containerPort: 80

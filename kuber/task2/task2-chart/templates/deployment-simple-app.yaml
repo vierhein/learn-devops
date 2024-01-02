@@ -17,7 +17,7 @@ spec:
         {{ .Values.labelsTomcat.key }}: {{ .Values.labelsTomcat.value }}
     spec:
       containers:
-        - name: simple-app-tomcat-container
+        - name: {{ .Values.imageTomact.containerName }}
           image: "{{ .Values.imageTomact.repository }}:{{ .Values.imageTomact.tag }}"
           ports:
             - containerPort: 8080
@@ -25,8 +25,8 @@ spec:
             - name: {{ .Values.volumeTomcatName }}
               mountPath: /usr/local/tomcat/webapps/
       initContainers:
-        - name: download-container
-          image: busybox
+        - name: {{ .Values.initTomcatContainer.containerName }}
+          image: "{{ .Values.initTomcatContainer.repository }}:{{ .Values.initTomcatContainer.tag }}"
           command: ['wget', '{{ .Values.sourceURL }}', '-O', '/source/sample.war']
           volumeMounts:
             - name: {{ .Values.volumeTomcatName }}
