@@ -32,10 +32,12 @@ volumeNginxName: nginx-conf
 volumeTomcatName: shared-data
 
 serviceNginx:
+  name: proxy-service
   type: NodePort
   port: 80
 
 serviceTomcat:
+  name: tomcat-service
   type: ClusterIP
-  port: 80
+  port: 8080
 
