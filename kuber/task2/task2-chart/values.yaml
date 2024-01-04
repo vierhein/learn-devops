@@ -1,0 +1,51 @@
+# Default values for task2-chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+typeDeploymentStrategy: Recreate
+
+# simple-app-tomcat-chart/values.yaml
+deploymentNameTomcat: simple-app-tomcat
+replicaCountTomcat: 1
+labelsTomcat:
+  key: app
+  value: simple-app-tomcat-pod
+
+imageTomact:
+  containerName: simple-app-tomcat-container
+  repository: tomcat
+  tag: 10
+sourceURL: https://tomcat.apache.org/tomcat-7.0-doc/appdev/sample/sample.war
+
+initTomcatContainer: 
+  containerName: download-container
+  repository: busybox
+  tag: 1.36
+
+
+# proxy-nginx-chart/values.yaml
+deploymentNameNginx: proxy-nginx
+replicaCountNginx: 1
+labelsNginx:
+  key: app
+  value: proxy-nginx-pod
+imageNginx:
+  containerName: proxy-nginx-container
+  repository: nginx
+  tag: 1.25.3
+
+configMapNginxName: nginx-conf-file
+
+volumeNginxName: nginx-conf
+volumeTomcatName: shared-data
+
+serviceNginx:
+  name: proxy-service
+  type: NodePort
+  port: 80
+
+serviceTomcat:
+  name: tomcat-service
+  type: ClusterIP
+  port: 8080
+

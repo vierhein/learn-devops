@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.deploymentNameTomcat }}
+  labels:
+    {{ .Values.labelsTomcat.key }}: {{ .Values.labelsTomcat.value }}
+spec:
+  replicas: {{ .Values.replicaCountTomcat }}
+  strategy:
+    type: {{ .Values.typeDeploymentStrategy }}
+  selector:
+    matchLabels:
+      {{ .Values.labelsTomcat.key }}: {{ .Values.labelsTomcat.value }}
+  template:
+    metadata:
+      labels:
+        {{ .Values.labelsTomcat.key }}: {{ .Values.labelsTomcat.value }}
+    spec:
+      containers:
+        - name: {{ .Values.imageTomact.containerName }}
+          image: "{{ .Values.imageTomact.repository }}:{{ .Values.imageTomact.tag }}"
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: {{ .Values.volumeTomcatName }}
+              mountPath: /usr/local/tomcat/webapps/
+      initContainers:
+        - name: {{ .Values.initTomcatContainer.containerName }}
+          image: "{{ .Values.initTomcatContainer.repository }}:{{ .Values.initTomcatContainer.tag }}"
+          command: ['wget', '{{ .Values.sourceURL }}', '-O', '/source/sample.war']
+          volumeMounts:
+            - name: {{ .Values.volumeTomcatName }}
+              mountPath: /source
+      volumes:
+        - name: {{ .Values.volumeTomcatName }}
+          emptyDir: {}
+
