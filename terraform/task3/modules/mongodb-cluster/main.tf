@@ -1,24 +1,24 @@
 provider "aws" {
   region = var.region
+  access_key = var.aws_access_key
+  secret_key = var.aws_secret_key
+}
+resource "aws_key_pair" "ssh_key" {
+  key_name   = "ssh_key"
+  public_key = file("~/.ssh/id_ed25519.pub") #TO DO to var
 }
 
 resource "aws_instance" "mongodb_instance" {
   count         = var.instance_count
   ami           = var.ami_id
   instance_type = var.instance_type
+  key_name      = aws_key_pair.ssh_key.key_name
 
   tags = {
     Name = "mongodb-instance-${count.index + 1}"
   }
 
-  user_data = <<-EOF
-              #!/bin/bash
-              sudo yum update -y
-              sudo amazon-linux-extras enable mongodb4.0
-              sudo yum install -y mongodb-org
-              sudo systemctl start mongod
-              sudo systemctl enable mongod
-              EOF
+  user_data = file("${path.module}/scripts/init.sh") #TO DO to var
 }
 
 resource "aws_security_group" "mongodb_sg" {

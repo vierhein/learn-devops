@@ -13,3 +13,11 @@ variable "ami_id" {
 variable "instance_type" {
   description = "Instance type for the MongoDB instances"
 }
+
+variable "aws_access_key" {
+  description = "Instance type for the MongoDB instances"
+}
+
+variable "aws_secret_key" {
+  description = "Instance type for the MongoDB instances"
+}
