@@ -6,4 +6,4 @@ container_config = [
   }
 ]
 
-environment = "dev"  # TO DO 
+# env = "prod"  # TO DO 

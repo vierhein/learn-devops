@@ -20,7 +20,7 @@ variable "container_config" {
   }))
 }
 
-variable "environment" {
+variable "env" {
   description = "Environment type (dev, prod, etc.)"
   type        = string
 }
@@ -36,7 +36,7 @@ resource "docker_container" "containers" {
   }
 
   # TO DO
-  memory         = var.environment == "dev" ? 128 : 256
+  memory         = var.env == "dev" ? 128 : 256
 }
 
 output "container_info" {

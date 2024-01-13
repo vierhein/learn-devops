@@ -14,5 +14,5 @@ provider "docker" {
 module "docker_containers" {
   source             = "./modules/docker-container"
   container_config   = var.container_config
-  environment        = var.environment
+  env        = var.env
 }

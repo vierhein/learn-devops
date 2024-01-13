@@ -7,7 +7,7 @@ variable "container_config" {
   }))
 }
 
-variable "environment" {
+variable "env" {
   description = "Environment type (dev, prod, etc.)"
   type        = string
 }
