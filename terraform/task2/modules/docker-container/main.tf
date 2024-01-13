@@ -11,20 +11,6 @@ provider "docker" {
   host = "unix:///var/run/docker.sock"
 }
 
-variable "container_config" {
-  description = "Configuration for Docker containers"
-  type        = list(object({
-    name  = string
-    image = string
-    ports = list(number)
-  }))
-}
-
-variable "env" {
-  description = "Environment type (dev, prod, etc.)"
-  type        = string
-}
-
 resource "docker_container" "containers" {
   count = length(var.container_config)
 
