@@ -1,24 +1,24 @@
 provider "aws" {
-  region = var.region
+  region     = var.aws_region
   access_key = var.aws_access_key
   secret_key = var.aws_secret_key
 }
 resource "aws_key_pair" "ssh_key" {
   key_name   = "ssh_key"
-  public_key = file("~/.ssh/id_ed25519.pub") #TO DO to var
+  public_key = file(var.public_key_path) 
 }
 
 resource "aws_instance" "mongodb_instance" {
-  count         = var.instance_count
-  ami           = var.ami_id
-  instance_type = var.instance_type
+  count         = var.aws_instance_count
+  ami           = var.aws_ami_id
+  instance_type = var.aws_instance_type
   key_name      = aws_key_pair.ssh_key.key_name
 
   tags = {
     Name = "mongodb-instance-${count.index + 1}"
   }
 
-  user_data = file("${path.module}/scripts/init.sh") #TO DO to var
+  user_data = file("${path.module}/scripts/init.sh")
 }
 
 resource "aws_security_group" "mongodb_sg" {

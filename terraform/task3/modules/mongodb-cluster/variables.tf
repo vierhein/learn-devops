@@ -1,23 +1,12 @@
-variable "region" {
-  description = "AWS region where the MongoDB cluster will be deployed"
-}
-
-variable "instance_count" {
-  description = "Number of MongoDB instances in the cluster"
-}
-
-variable "ami_id" {
+variable "aws_region" {}
+variable "aws_instance_count" {}
+variable "aws_ami_id" {
   description = "AMI ID for the MongoDB instances"
 }
+variable "aws_instance_type" {}
+variable "aws_access_key" {}
+variable "aws_secret_key" {}
 
-variable "instance_type" {
-  description = "Instance type for the MongoDB instances"
-}
-
-variable "aws_access_key" {
-  description = "Instance type for the MongoDB instances"
-}
-
-variable "aws_secret_key" {
-  description = "Instance type for the MongoDB instances"
+variable "public_key_path" {
+  description = "Path to public key using for access EC2 instance"
 }
