@@ -9,10 +9,11 @@ resource "aws_key_pair" "ssh_key" {
 }
 
 resource "aws_instance" "mongodb_instance" {
-  count         = var.aws_instance_count
-  ami           = var.aws_ami_id
-  instance_type = var.aws_instance_type
-  key_name      = aws_key_pair.ssh_key.key_name
+  count                  = var.aws_instance_count
+  ami                    = var.aws_ami_id
+  instance_type          = var.aws_instance_type
+  vpc_security_group_ids = [ aws_security_group.mongodb_sg.id ]
+  key_name               = aws_key_pair.ssh_key.key_name
 
   tags = {
     Name = "mongodb-instance-${count.index + 1}"
@@ -26,6 +27,13 @@ resource "aws_security_group" "mongodb_sg" {
   description = "MongoDB Security Group"
 
   ingress {
+    from_port   = 27017
+    to_port     = 27017
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
     from_port   = 27017
     to_port     = 27017
     protocol    = "tcp"
