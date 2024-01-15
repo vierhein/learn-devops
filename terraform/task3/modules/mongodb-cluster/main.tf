@@ -16,7 +16,8 @@ resource "aws_instance" "mongodb_instance" {
   key_name               = aws_key_pair.ssh_key.key_name
 
   tags = {
-    Name = "mongodb-instance-${count.index + 1}"
+    Name    = "mongodb-instance-${count.index + 1}"
+    Backup  = "true"
   }
 
   user_data = file("${path.module}/scripts/init.sh")
