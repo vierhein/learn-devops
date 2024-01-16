@@ -16,10 +16,6 @@ data "aws_iam_policy" "aws-backup-service-policy" {
   arn = "arn:aws:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForBackup"
 }
 
-data "aws_iam_policy" "aws-restore-service-policy" {
-  arn = "arn:aws:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForRestores"
-}
-
 data "aws_caller_identity" "current_account" {}
 
 /* Roles for taking AWS Backups */
