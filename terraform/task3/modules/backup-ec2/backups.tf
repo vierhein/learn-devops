@@ -1,7 +1,7 @@
 locals {
   backups = {
-    schedule  = "cron(0 * ? * * *)" /* UTC Time */
-    retention = 7 // days
+    schedule  = var.backup_schedule
+    retention = var.backup_retention
   }
 }
 
@@ -16,11 +16,11 @@ resource "aws_backup_plan" "mongodb-backup-plan" {
   name = "mongodb-backup-plan"
 
   rule {
-    rule_name         = "every-hour-${local.backups.retention}-day-retention"
+    rule_name         = "backup-ec2-${local.backups.retention}-day-retention"
     target_vault_name = aws_backup_vault.mongodb-backup-vault.name
     schedule          = local.backups.schedule
-    start_window      = 60
-    completion_window = 120
+    start_window      = var.backup_start_window
+    completion_window = var.backup_completion_window
 
     lifecycle {
       delete_after = local.backups.retention

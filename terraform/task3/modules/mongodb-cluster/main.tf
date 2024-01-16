@@ -17,7 +17,7 @@ resource "aws_instance" "mongodb_instance" {
 
   tags = {
     Name    = "mongodb-instance-${count.index + 1}"
-    Backup  = "true"
+    Backup  = var.backup_value
   }
 
   user_data = file("${path.module}/scripts/init.sh")
