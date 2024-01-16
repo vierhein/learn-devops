@@ -8,7 +8,6 @@ locals {
 resource "aws_backup_vault" "example-backup-vault" {
   name = "mongodb-backup-vault"
   tags = {
-    Project = "test"
     Role    = "backup-vault"
   }
 }

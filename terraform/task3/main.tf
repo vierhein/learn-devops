@@ -15,6 +15,13 @@ module "mongodb_cluster" {
   public_key_path     = var.public_key_path          
 }
 
+module "backup_ec2" {
+  source              = "./modules/backup-ec2"
+  aws_region          = var.aws_region
+  aws_access_key      = var.aws_access_key
+  aws_secret_key      = var.aws_secret_key         
+}
+
 output "mongodb_connection_string" {
   value = module.mongodb_cluster.mongodb_connection_string
 }
