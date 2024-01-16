@@ -21,7 +21,6 @@ resource "docker_container" "containers" {
     external = var.container_config[count.index].ports[1]
   }
 
-  # TO DO
   memory         = var.env == "dev" ? 128 : 256
 }
 
