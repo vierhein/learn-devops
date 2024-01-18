@@ -26,7 +26,6 @@ resource "docker_container" "containers" {
 
 output "container_info" {
   value = {
-    ids   = [for container in docker_container.containers : container.id]
-    ports = [for container in docker_container.containers : container.ports]
+    data = [for container in docker_container.containers : { id = container.id, ports = container.ports }]
   }
 }
