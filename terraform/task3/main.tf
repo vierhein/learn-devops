@@ -20,7 +20,3 @@ module "backup_ec2" {
   backup_start_window      = var.backup_start_window
   backup_completion_window = var.backup_completion_window
 }
-
-output "mongodb_connection_string" {
-  value = module.mongodb_cluster.mongodb_connection_string
-}
