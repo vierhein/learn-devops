@@ -1,4 +1,3 @@
 output "passwords" {
-  sensitive = true
-  value = random_password.generated_passwords[*].result
+  value = nonsensitive(join(",", [for i in random_password.generated_passwords : "${i.result}"]))
 }
