@@ -37,3 +37,5 @@ db.createUser(
   }
 )
 EOF
+
+#Copy SSL certificates
