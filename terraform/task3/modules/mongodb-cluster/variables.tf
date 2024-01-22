@@ -5,5 +5,3 @@ variable "aws_instance_type" {}
 variable "aws_access_key" {}
 variable "aws_secret_key" {}
 variable "public_key_path" {}
-
-variable "backup_value" {}
