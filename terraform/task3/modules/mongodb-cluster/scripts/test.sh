@@ -39,3 +39,8 @@ db.createUser(
 EOF
 
 #Copy SSL certificates
+sudo mkdir -p /etc/mongodb/ssl
+sudo chmod 700 /etc/mongodb/ssl
+sudo chown -R mongod:mongod /etc/mongodb
+sudo cp /tmp/mongoCA.crt /etc/mongodb/ssl
+sudo cp /tmp/mongo.pem /etc/mongodb/ssl

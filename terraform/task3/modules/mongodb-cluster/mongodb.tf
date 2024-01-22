@@ -15,4 +15,15 @@ resource "aws_instance" "mongodb_instance" {
   }
 
   user_data = base64encode(templatefile("${path.module}/scripts/test.sh", {dns_name = "mongo${count.index + 1}.example.io"}))
+
+  provisioner "file" {
+    source      = "${path.module}/cert"
+    destination = "/tmp"
+
+    connection {
+      type        = "ssh"
+      user        = "ec2-user"
+      host        = "${self.public_dns}"
+    }
+  }
 }
