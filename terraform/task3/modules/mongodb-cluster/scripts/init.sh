@@ -3,7 +3,7 @@ DNS_NAME="${dns_name}"
 MONGO_USER="admin"
 MONGO_PASSWORD="password"
 
-sudo hostnamectl set-hostname ${dns_name}
+sudo hostnamectl set-hostname $DNS_NAME
 
 cat <<EOF | sudo tee /etc/yum.repos.d/mongodb-org-7.0.repo
 [mongodb-org-7.0]
