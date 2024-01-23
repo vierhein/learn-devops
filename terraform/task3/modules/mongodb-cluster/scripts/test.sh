@@ -3,7 +3,7 @@ echo "${dns_name}" | sudo tee /test.txt # to delete
 MONGO_USER="admin"
 MONGO_PASSWORD="password"
 
-sudo hostnamectl set-hostname $dns_name
+sudo hostnamectl set-hostname ${dns_name}
 
 cat <<EOF | sudo tee /etc/yum.repos.d/mongodb-org-7.0.repo
 [mongodb-org-7.0]
@@ -115,3 +115,14 @@ replication:
 EOF
 
 sudo systemctl restart mongod
+#TO DO dynamicly create settigs
+sudo mongosh admin --tls --tlsCAFile /etc/mongodb/ssl/mongoCA.crt --tlsCertificateKeyFile /etc/mongodb/ssl/mongo.pem -u $MONGO_USER -p $MONGO_PASSWORD --host mongo1.example.io <<EOF
+rs.initiate( {
+_id : "agencyMeshAppMongodb",
+members: [
+    { _id: 0, host: "mongo1.example.io:27017" },
+    { _id: 1, host: "mongo2.example.io:27017" },
+    { _id: 2, host: "mongo3.example.io:27017" }
+]
+})
+EOF
