@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "${dns_name}" | sudo tee /test.txt # to delete
+DNS_NAME="${dns_name}"
 MONGO_USER="admin"
 MONGO_PASSWORD="password"
 
@@ -88,7 +88,7 @@ processManagement:
 # network interfaces
 net:
   port: 27017
-  bindIp: 127.0.0.1,${dns_name} # Enter 0.0.0.0,:: to bind to all IPv4 and IPv6 addresses or, alternatively, use the net.bindIpAll setting.
+  bindIp: 127.0.0.1,$DNS_NAME # Enter 0.0.0.0,:: to bind to all IPv4 and IPv6 addresses or, alternatively, use the net.bindIpAll setting.
   unixDomainSocket:
      enabled: true
      pathPrefix: /var/run/mongodb
@@ -116,13 +116,20 @@ EOF
 
 sudo systemctl restart mongod
 #TO DO dynamicly create settigs
-sudo mongosh admin --tls --tlsCAFile /etc/mongodb/ssl/mongoCA.crt --tlsCertificateKeyFile /etc/mongodb/ssl/mongo.pem -u $MONGO_USER -p $MONGO_PASSWORD --host mongo1.example.io <<EOF
-rs.initiate( {
-_id : "agencyMeshAppMongodb",
-members: [
-    { _id: 0, host: "mongo1.example.io:27017" },
-    { _id: 1, host: "mongo2.example.io:27017" },
-    { _id: 2, host: "mongo3.example.io:27017" }
-]
-})
+if [[ $DNS_NAME == "mongo1.example.io" ]]; then
+    sleep 10
+    sudo mongosh admin --tls --tlsCAFile /etc/mongodb/ssl/mongoCA.crt --tlsCertificateKeyFile /etc/mongodb/ssl/mongo.pem -u $MONGO_USER -p $MONGO_PASSWORD --host mongo1.example.io <<EOF
+    rs.initiate( {
+    _id : "agencyMeshAppMongodb",
+    members: [
+        { _id: 0, host: "mongo1.example.io:27017" },
+        { _id: 1, host: "mongo2.example.io:27017" },
+        { _id: 2, host: "mongo3.example.io:27017" }
+    ]
+    })
 EOF
+    sleep 2
+    sudo mongosh admin --tls --tlsCAFile /etc/mongodb/ssl/mongoCA.crt --tlsCertificateKeyFile /etc/mongodb/ssl/mongo.pem -u $MONGO_USER -p $MONGO_PASSWORD --host mongo1.example.io <<EOF
+    rs.conf()
+EOF
+fi
