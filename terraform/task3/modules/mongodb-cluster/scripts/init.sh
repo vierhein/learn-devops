@@ -1,7 +1,10 @@
 #!/bin/bash
-DNS_NAME="${dns_name}"
-MONGO_USER="admin"
-MONGO_PASSWORD="password"
+DOMAIN_NAME="${domain_name}"
+NUM_HOSTS="${num_hosts}"
+NUM_HOST_CURRENT="${num_host_current}"
+DNS_NAME="mongo${num_host_current}.${domain_name}"
+MONGO_USER="${mongo_user}"
+MONGO_PASSWORD="${mongo_password}"
 
 sudo hostnamectl set-hostname $DNS_NAME
 
@@ -16,13 +19,12 @@ EOF
 
 sudo yum install -y mongodb-org-7.0.3 mongodb-org-database-7.0.3 mongodb-org-server-7.0.3 mongodb-mongosh-shared-openssl3 mongodb-org-mongos-7.0.3 mongodb-org-tools-7.0.3
 
-# Append the line to /etc/yum.conf
+# Pin versions
 echo "exclude=mongodb-org,mongodb-org-database,mongodb-org-server,mongodb-mongosh,mongodb-org-mongos,mongodb-org-tools" | sudo tee -a /etc/yum.conf
 
 # Start MongoDB
 sudo systemctl daemon-reload
 sudo systemctl start mongod
-sudo systemctl enable mongod
 chkconfig mongod on
 
 sleep 30 #wait mongosh access 
@@ -115,17 +117,21 @@ replication:
 EOF
 
 sudo systemctl restart mongod
-#TO DO dynamicly create settigs
-if [[ $DNS_NAME == "mongo1.example.io" ]]; then
-    sleep 10
+
+if [[ $NUM_HOST_CURRENT -eq 1 ]] && [ $NUM_HOSTS -gt 1 ]; then
+    sleep 20
+    #Generate settings
+    ARRAY=()
+    for ((i = 0; i < NUM_HOSTS; i++)); do
+        ARRAY+=("{ _id: $i, host: \"mongo$((i + 1)).$DOMAIN_NAME:27017\" }")
+    done
+    RESULT_SETTINGS=$(IFS=,; echo "${ARRAY[*]}")
+
+    #Apply settings
     sudo mongosh admin --tls --tlsCAFile /etc/mongodb/ssl/mongoCA.crt --tlsCertificateKeyFile /etc/mongodb/ssl/mongo.pem -u $MONGO_USER -p $MONGO_PASSWORD --host mongo1.example.io <<EOF
     rs.initiate( {
     _id : "agencyMeshAppMongodb",
-    members: [
-        { _id: 0, host: "mongo1.example.io:27017" },
-        { _id: 1, host: "mongo2.example.io:27017" },
-        { _id: 2, host: "mongo3.example.io:27017" }
-    ]
+    members: [ $RESULT_SETTINGS ]
     })
 EOF
     sleep 2

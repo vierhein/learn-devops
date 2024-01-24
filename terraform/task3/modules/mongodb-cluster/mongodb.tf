@@ -22,8 +22,17 @@ resource "aws_instance" "mongodb_instance" {
       user        = "ec2-user"
       host        = "${self.public_dns}"
     }
+  } 
+}
+
+resource "null_resource" "host_provisioning" {
+  count = "${var.aws_instance_count}"
+
+  connection {
+    user = "ec2-user"
+    host = "${element(aws_instance.mongodb_instance.*.public_ip, count.index)}"
   }
-  
+
   provisioner "remote-exec" {
     inline = [
       "export num_host_current=${count.index + 1}",
@@ -33,10 +42,5 @@ resource "aws_instance" "mongodb_instance" {
       "export mongo_password=${var.mongo_password}",
       "${file("${path.module}/scripts/test.sh")}",
     ]
-    connection {
-      type        = "ssh"
-      user        = "ec2-user"
-      host        = "${self.public_dns}"
-    }
   }
 }

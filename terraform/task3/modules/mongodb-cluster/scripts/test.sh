@@ -19,13 +19,12 @@ EOF
 
 sudo yum install -y mongodb-org-7.0.3 mongodb-org-database-7.0.3 mongodb-org-server-7.0.3 mongodb-mongosh-shared-openssl3 mongodb-org-mongos-7.0.3 mongodb-org-tools-7.0.3
 
-# Append the line to /etc/yum.conf
+# Pin versions
 echo "exclude=mongodb-org,mongodb-org-database,mongodb-org-server,mongodb-mongosh,mongodb-org-mongos,mongodb-org-tools" | sudo tee -a /etc/yum.conf
 
 # Start MongoDB
 sudo systemctl daemon-reload
 sudo systemctl start mongod
-sudo systemctl enable mongod
 chkconfig mongod on
 
 sleep 30 #wait mongosh access 
