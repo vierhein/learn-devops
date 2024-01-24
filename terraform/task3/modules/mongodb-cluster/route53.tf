@@ -1,11 +1,14 @@
-data "aws_vpc" "default" {
-  default = true
+data "aws_vpc" "mongo_db" {
+  filter {
+    name = "tag:Name"
+    values = ["mongo-db-vpc"]
+  }
 }
 
 resource "aws_route53_zone" "private" {
   name = var.domain_name
   vpc {
-    vpc_id     = data.aws_vpc.default.id
+    vpc_id     = data.aws_vpc.mongo_db.id
     vpc_region = "eu-central-1"
   }
 }

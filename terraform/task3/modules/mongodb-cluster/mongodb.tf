@@ -3,26 +3,77 @@ resource "aws_key_pair" "ssh_key" {
   public_key = file(var.public_key_path) 
 }
 
+data "aws_subnet" "mongo_db_public" {
+  filter {
+    name = "tag:Name"
+    values = ["mongo-db-subnet-public1-eu-central-1a"]
+  }
+}
+
+data "aws_subnet" "mongo_db_private" {
+  filter {
+    name = "tag:Name"
+    values = ["mongo-db-subnet-private1-eu-central-1a"]
+  }
+}
+
+resource "aws_instance" "bastion_instance" {
+  count                  = 1
+  ami                    = var.aws_ami_id
+  instance_type          = var.aws_instance_type
+  vpc_security_group_ids = [ aws_security_group.mongodb_sg.id ]
+  subnet_id              = data.aws_subnet.mongo_db_public.id
+  key_name               = aws_key_pair.ssh_key.key_name
+  tags = {
+    Name    = "bastion-instance"
+  } 
+}
+
 resource "aws_instance" "mongodb_instance" {
   count                  = var.aws_instance_count
   ami                    = var.aws_ami_id
   instance_type          = var.aws_instance_type
-#   vpc_security_group_ids = [ aws_security_group.mongodb_sg.id ]
+  vpc_security_group_ids = [ aws_security_group.mongodb_sg.id ]
+  subnet_id              = data.aws_subnet.mongo_db_private.id
   key_name               = aws_key_pair.ssh_key.key_name
 
   tags = {
     Name    = "mongodb-instance-${count.index + 1}"
-  }
-  provisioner "file" {
-    source      = "${path.module}/cert"
-    destination = "/tmp"
-
-    connection {
-      type        = "ssh"
-      user        = "ec2-user"
-      host        = "${self.public_dns}"
-    }
   } 
+}
+
+resource "aws_security_group" "mongodb_sg" {
+  name        = "mongo-sg"
+  description = "MongoDB Security Group"
+  vpc_id      = data.aws_vpc.mongo_db.id
+
+  ingress {
+    description = "TLS from VPC"
+    from_port   = 27017
+    to_port     = 27017
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "ssh"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  tags = {
+    Name = "sg-mongodb"
+  }
 }
 
 resource "null_resource" "host_provisioning" {
@@ -31,6 +82,11 @@ resource "null_resource" "host_provisioning" {
   connection {
     user = "ec2-user"
     host = "${element(aws_instance.mongodb_instance.*.public_ip, count.index)}"
+  }
+
+  provisioner "file" {
+    source      = "${path.module}/cert"
+    destination = "/tmp"
   }
 
   provisioner "remote-exec" {
