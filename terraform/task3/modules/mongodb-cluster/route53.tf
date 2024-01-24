@@ -3,7 +3,7 @@ data "aws_vpc" "default" {
 }
 
 resource "aws_route53_zone" "private" {
-  name = "example.io"
+  name = var.domain_name
   vpc {
     vpc_id     = data.aws_vpc.default.id
     vpc_region = "eu-central-1"

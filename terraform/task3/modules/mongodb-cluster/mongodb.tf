@@ -13,13 +13,26 @@ resource "aws_instance" "mongodb_instance" {
   tags = {
     Name    = "mongodb-instance-${count.index + 1}"
   }
-
-  user_data = base64encode(templatefile("${path.module}/scripts/test.sh", {dns_name = "mongo${count.index + 1}.example.io"}))
-
   provisioner "file" {
     source      = "${path.module}/cert"
     destination = "/tmp"
 
+    connection {
+      type        = "ssh"
+      user        = "ec2-user"
+      host        = "${self.public_dns}"
+    }
+  }
+  
+  provisioner "remote-exec" {
+    inline = [
+      "export num_host_current=${count.index + 1}",
+      "export num_hosts=${var.aws_instance_count}",
+      "export domain_name=${var.domain_name}",
+      "export mongo_user=${var.mongo_user}",
+      "export mongo_password=${var.mongo_password}",
+      "${file("${path.module}/scripts/test.sh")}",
+    ]
     connection {
       type        = "ssh"
       user        = "ec2-user"
