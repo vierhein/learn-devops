@@ -7,6 +7,7 @@ variable "aws_ami_id" {}
 variable "aws_instance_type" {}
 variable "public_key_path" {}
 variable "private_key_path" {}
+variable "cert_path" {}
 
 variable "domain_name" {}
 variable "mongo_user" {}

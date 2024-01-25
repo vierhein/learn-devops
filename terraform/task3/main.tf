@@ -8,6 +8,7 @@ module "mongodb_cluster" {
   aws_secret_key      = var.aws_secret_key
   public_key_path     = var.public_key_path
   private_key_path    = var.private_key_path
+  cert_path           = var.cert_path
   domain_name         = var.domain_name
   mongo_user          = var.mongo_user
   mongo_password      = var.mongo_password 

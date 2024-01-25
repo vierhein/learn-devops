@@ -87,7 +87,7 @@ resource "null_resource" "host_provisioning" {
   }
 
   provisioner "file" {
-    source      = "${path.module}/cert"
+    source      = var.cert_path
     destination = "/tmp"
   }
 
