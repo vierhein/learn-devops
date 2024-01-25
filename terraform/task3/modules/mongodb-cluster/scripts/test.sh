@@ -142,7 +142,7 @@ fi
 
 if [[ $NUM_HOST_CURRENT -eq $NUM_HOSTS ]]; then
     sudo yum install -y cronie
-    sudo source /etc/profile
+    source /etc/profile
     cat <<EOF | sudo tee /opt/backup/script/backup_script.sh
     #!/bin/bash
 
