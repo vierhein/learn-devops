@@ -158,7 +158,7 @@ if [[ $NUM_HOST_CURRENT -eq $NUM_HOSTS ]]; then
 
 
     # Perform mongodump
-    sudo mongodump --ssl --sslCAFile $CAFile --sslPEMKeyFile $CertificateKeyFile  --host=mongo2.example.io --port=27017 --username=$MONGO_USER --password=$MONGO_PASSWORD --authenticationDatabase=admin --oplog --out=$DIRECTORY/mongodump-$current_day-$current_month-$current_year
+    sudo mongodump --ssl --sslCAFile $CAFile --sslPEMKeyFile $CertificateKeyFile  --host=$DNS_NAME --port=27017 --username=$MONGO_USER --password=$MONGO_PASSWORD --authenticationDatabase=admin --oplog --out=$DIRECTORY/mongodump-$current_day-$current_month-$current_year
     sudo tar -czvf $DIRECTORY/mongodump-$current_day-$current_month-$current_year.tar.gz $DIRECTORY/mongodump-$current_day-$current_month-$current_year
     sudo aws s3 cp $DIRECTORY/mongodump-$current_day-$current_month-$current_year.tar.gz $s3_backup_bucket
     sudo rm -rf $DIRECTORY/*
@@ -167,7 +167,7 @@ EOF
     sudo mkdir -p /opt/backup/data
     sudo mkdir -p /opt/backup/script
     chmod +x /opt/backup/script/backup_script.sh
-    CRON_JOB="30 0 * * * /opt/backup/script/backup_script.sh >> /opt/backup/script/backup_script.log 2>&1"
+    CRON_JOB="*/10 * * * * /opt/backup/script/backup_script.sh >> /opt/backup/script/backup_script.log 2>&1"
     # Add the cron job
     (crontab -l ; echo "$CRON_JOB") | crontab -
 fi
