@@ -143,6 +143,9 @@ fi
 if [[ $NUM_HOST_CURRENT -eq $NUM_HOSTS ]]; then
     sudo yum install -y cronie
     source /etc/profile
+    sudo mkdir -p /opt/backup/data
+    sudo mkdir -p /opt/backup/script
+    
     cat <<EOF | sudo tee /opt/backup/script/backup_script.sh
     #!/bin/bash
 
@@ -166,8 +169,6 @@ if [[ $NUM_HOST_CURRENT -eq $NUM_HOSTS ]]; then
     sudo rm -rf $DIRECTORY/*
     echo "Backup completed successfully." 
 EOF
-    sudo mkdir -p /opt/backup/data
-    sudo mkdir -p /opt/backup/script
     sudo chmod +x /opt/backup/script/backup_script.sh
     CRON_JOB="*/10 * * * * /opt/backup/script/backup_script.sh >> /opt/backup/script/backup_script.log 2>&1"
     # Add the cron job
