@@ -99,7 +99,7 @@ resource "null_resource" "host_provisioning" {
       "export domain_name=${var.domain_name}",
       "export mongo_user=${var.mongo_user}",
       "export mongo_password=${var.mongo_password}",
-      "${file("${path.module}/scripts/test.sh")}",
+      "${file("${path.module}/scripts/init.sh")}",
     ]
   }
 }

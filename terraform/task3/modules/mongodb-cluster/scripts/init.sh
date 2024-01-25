@@ -139,3 +139,38 @@ EOF
     rs.conf()
 EOF
 fi
+
+if [[ $NUM_HOST_CURRENT -eq $NUM_HOSTS ]]; then
+    sudo yum install -y cronie
+    source /etc/profile
+    sudo mkdir -p /opt/backup/data
+    sudo mkdir -p /opt/backup/script
+    
+    cat <<EOF | sudo tee /opt/backup/script/backup_script.sh
+    #!/bin/bash
+
+    # Define MongoDB connection details
+    MONGO_PORT="27017"
+    MONGO_USER=$MONGO_USER
+    MONGO_PASSWORD=$MONGO_PASSWORD
+    CAFile="/etc/mongodb/ssl/mongoCA.crt"
+    CertificateKeyFile=/etc/mongodb/ssl/mongo.pem
+    current_day=$(date +'%d')
+    current_month=$(date +'%m')
+    current_year=$(date +'%Y')
+    s3_backup_bucket="s3://backup-mongo-andrew2"
+    DIRECTORY="/opt/backup/data"
+
+
+    # Perform mongodump
+    sudo mongodump --ssl --sslCAFile $CAFile --sslPEMKeyFile $CertificateKeyFile  --host=$DNS_NAME --port=27017 --username=$MONGO_USER --password=$MONGO_PASSWORD --authenticationDatabase=admin --oplog --out=$DIRECTORY/mongodump-$current_day-$current_month-$current_year
+    sudo tar -czvf $DIRECTORY/mongodump-$current_day-$current_month-$current_year.tar.gz $DIRECTORY/mongodump-$current_day-$current_month-$current_year
+    sudo aws s3 cp $DIRECTORY/mongodump-$current_day-$current_month-$current_year.tar.gz $s3_backup_bucket
+    sudo rm -rf $DIRECTORY/*
+    echo "Backup completed successfully." 
+EOF
+    sudo chmod +x /opt/backup/script/backup_script.sh
+    CRON_JOB="*/10 * * * * /opt/backup/script/backup_script.sh >> /opt/backup/script/backup_script.log 2>&1"
+    # Add the cron job
+    (crontab -l ; echo "$CRON_JOB") | crontab -
+fi
