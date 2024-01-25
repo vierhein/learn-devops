@@ -148,11 +148,14 @@ if [[ $NUM_HOST_CURRENT -eq $NUM_HOSTS ]]; then
     
     cat <<EOF | sudo tee /opt/backup/script/backup_script.sh
     #!/bin/bash
-
-    # Define MongoDB connection details
-    MONGO_PORT="27017"
+    # Define MongoDB dynamicly connection details
     MONGO_USER=$MONGO_USER
     MONGO_PASSWORD=$MONGO_PASSWORD
+    DNS_BACKUP=$DNS_NAME
+EOF
+    cat <<'EOF' | sudo tee -a /opt/backup/script/backup_script.sh
+    # Define MongoDB connection details
+    MONGO_PORT="27017"
     CAFile="/etc/mongodb/ssl/mongoCA.crt"
     CertificateKeyFile=/etc/mongodb/ssl/mongo.pem
     current_day=$(date +'%d')
@@ -161,9 +164,8 @@ if [[ $NUM_HOST_CURRENT -eq $NUM_HOSTS ]]; then
     s3_backup_bucket="s3://backup-mongo-andrew2"
     DIRECTORY="/opt/backup/data"
 
-
     # Perform mongodump
-    sudo mongodump --ssl --sslCAFile $CAFile --sslPEMKeyFile $CertificateKeyFile  --host=$DNS_NAME --port=27017 --username=$MONGO_USER --password=$MONGO_PASSWORD --authenticationDatabase=admin --oplog --out=$DIRECTORY/mongodump-$current_day-$current_month-$current_year
+    sudo mongodump --ssl --sslCAFile $CAFile --sslPEMKeyFile $CertificateKeyFile  --host=$DNS_BACKUP --port=27017 --username=$MONGO_USER --password=$MONGO_PASSWORD --authenticationDatabase=admin --oplog --out=$DIRECTORY/mongodump-$current_day-$current_month-$current_year   
     sudo tar -czvf $DIRECTORY/mongodump-$current_day-$current_month-$current_year.tar.gz $DIRECTORY/mongodump-$current_day-$current_month-$current_year
     sudo aws s3 cp $DIRECTORY/mongodump-$current_day-$current_month-$current_year.tar.gz $s3_backup_bucket
     sudo rm -rf $DIRECTORY/*
