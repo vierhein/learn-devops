@@ -143,6 +143,7 @@ fi
 if [[ $NUM_HOST_CURRENT -eq $NUM_HOSTS ]]; then
     sudo yum install -y cronie
     source /etc/profile
+    sudo systemctl start crond.service
     sudo mkdir -p /opt/backup/data
     sudo mkdir -p /opt/backup/script
     
@@ -174,5 +175,5 @@ EOF
     sudo chmod +x /opt/backup/script/backup_script.sh
     CRON_JOB="*/10 * * * * /opt/backup/script/backup_script.sh >> /opt/backup/script/backup_script.log 2>&1"
     # Add the cron job
-    (crontab -l ; echo "$CRON_JOB") | crontab -
+    (sudo crontab -l ; echo "$CRON_JOB") | sudo crontab -
 fi
