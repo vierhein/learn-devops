@@ -3,5 +3,5 @@ output "mongodb_connection_string" {
 }
 
 output "bastion_connection_string" {
-  value = join(",", [for i in aws_instance.bastion_instance : "${i.public_ip}"])
+  value = aws_instance.bastion_instance.public_ip
 }

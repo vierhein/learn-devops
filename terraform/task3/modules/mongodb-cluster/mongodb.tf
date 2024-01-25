@@ -18,7 +18,6 @@ data "aws_subnet" "mongo_db_private" {
 }
 
 resource "aws_instance" "bastion_instance" {
-  count                  = 1
   ami                    = var.aws_ami_id
   instance_type          = var.aws_instance_type
   vpc_security_group_ids = [ aws_security_group.mongodb_sg.id ]
@@ -81,7 +80,10 @@ resource "null_resource" "host_provisioning" {
 
   connection {
     user = "ec2-user"
-    host = "${element(aws_instance.mongodb_instance.*.public_ip, count.index)}"
+    host = "${element(aws_instance.mongodb_instance.*.private_ip, count.index)}"
+    bastion_user = "ec2-user"
+    bastion_host = aws_instance.bastion_instance.public_ip
+    bastion_private_key = file(var.private_key_path)
   }
 
   provisioner "file" {
