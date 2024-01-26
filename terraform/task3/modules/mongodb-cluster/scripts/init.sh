@@ -173,7 +173,7 @@ EOF
     echo "Backup completed successfully." 
 EOF
     sudo chmod +x /opt/backup/script/backup_script.sh
-    CRON_JOB="*/10 * * * * /opt/backup/script/backup_script.sh >> /opt/backup/script/backup_script.log 2>&1"
+    CRON_JOB="*/30 * * * * /opt/backup/script/backup_script.sh >> /opt/backup/script/backup_script.log 2>&1"
     # Add the cron job
     (sudo crontab -l ; echo "$CRON_JOB") | sudo crontab -
 fi

@@ -52,7 +52,7 @@ resource "aws_security_group" "mongodb_sg" {
     from_port   = 27017
     to_port     = 27017
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = [ data.aws_vpc.mongo_db.cidr_block ]
   }
 
   ingress {
@@ -76,30 +76,30 @@ resource "aws_security_group" "mongodb_sg" {
   }
 }
 
-resource "null_resource" "host_provisioning" {
-  count = "${var.aws_instance_count}"
+# resource "null_resource" "host_provisioning" {
+#   count = "${var.aws_instance_count}"
 
-  connection {
-    user = "ec2-user"
-    host = "${element(aws_instance.mongodb_instance.*.private_ip, count.index)}"
-    bastion_user = "ec2-user"
-    bastion_host = aws_instance.bastion_instance.public_ip
-    bastion_private_key = file(var.private_key_path)
-  }
+#   connection {
+#     user = "ec2-user"
+#     host = "${element(aws_instance.mongodb_instance.*.private_ip, count.index)}"
+#     bastion_user = "ec2-user"
+#     bastion_host = aws_instance.bastion_instance.public_ip
+#     bastion_private_key = file(var.private_key_path)
+#   }
 
-  provisioner "file" {
-    source      = var.cert_path
-    destination = "/tmp"
-  }
+#   provisioner "file" {
+#     source      = var.cert_path
+#     destination = "/tmp"
+#   }
 
-  provisioner "remote-exec" {
-    inline = [
-      "export num_host_current=${count.index + 1}",
-      "export num_hosts=${var.aws_instance_count}",
-      "export domain_name=${var.domain_name}",
-      "export mongo_user=${var.mongo_user}",
-      "export mongo_password=${var.mongo_password}",
-      "${file("${path.module}/scripts/init.sh")}",
-    ]
-  }
-}
+#   provisioner "remote-exec" {
+#     inline = [
+#       "export num_host_current=${count.index + 1}",
+#       "export num_hosts=${var.aws_instance_count}",
+#       "export domain_name=${var.domain_name}",
+#       "export mongo_user=${var.mongo_user}",
+#       "export mongo_password=${var.mongo_password}",
+#       "${file("${path.module}/scripts/init.sh")}",
+#     ]
+#   }
+# }
