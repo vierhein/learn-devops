@@ -17,15 +17,40 @@ data "aws_subnet" "mongo_db_private" {
   }
 }
 
-resource "aws_instance" "bastion_instance" {
-  ami                    = var.aws_ami_id
-  instance_type          = var.aws_instance_type
-  vpc_security_group_ids = [ aws_security_group.mongodb_sg.id ]
-  subnet_id              = data.aws_subnet.mongo_db_public.id
-  key_name               = aws_key_pair.ssh_key.key_name
-  tags = {
-    Name    = "bastion-instance"
-  } 
+# Render a part using a `template_file`
+data "template_file" "conf" {
+  template = "${file("${path.module}/templates/conf.tpl")}"
+}
+
+data "template_file" "script" {
+  count = var.aws_instance_count
+  template = "${file("${path.module}/templates/init.sh")}"
+
+  vars = {
+    num_host_current="${count.index + 1}",
+    num_hosts="${var.aws_instance_count}",
+    domain_name="${var.domain_name}",
+    mongo_user="${var.mongo_user}",
+    mongo_password="${var.mongo_password}",
+  }
+}
+
+data "template_cloudinit_config" "config" {
+  gzip          = true
+  base64_encode = true
+  count = var.aws_instance_count
+
+  part {
+    filename     = "conf.cfg"
+    content_type = "text/cloud-config"
+    content      = "${data.template_file.conf.rendered}"
+  }
+  
+  part {
+    filename     = "init.cfg"
+    content_type = "text/x-shellscript"
+    content       = element(data.template_file.script.*.rendered, count.index)
+  }
 }
 
 resource "aws_instance" "mongodb_instance" {
@@ -39,7 +64,9 @@ resource "aws_instance" "mongodb_instance" {
 
   tags = {
     Name    = "mongodb-instance-${count.index + 1}"
-  } 
+  }
+
+  user_data = element(data.template_cloudinit_config.config.*.rendered, count.index) 
 }
 
 resource "aws_security_group" "mongodb_sg" {
@@ -76,30 +103,13 @@ resource "aws_security_group" "mongodb_sg" {
   }
 }
 
-# resource "null_resource" "host_provisioning" {
-#   count = "${var.aws_instance_count}"
-
-#   connection {
-#     user = "ec2-user"
-#     host = "${element(aws_instance.mongodb_instance.*.private_ip, count.index)}"
-#     bastion_user = "ec2-user"
-#     bastion_host = aws_instance.bastion_instance.public_ip
-#     bastion_private_key = file(var.private_key_path)
-#   }
-
-#   provisioner "file" {
-#     source      = var.cert_path
-#     destination = "/tmp"
-#   }
-
-#   provisioner "remote-exec" {
-#     inline = [
-#       "export num_host_current=${count.index + 1}",
-#       "export num_hosts=${var.aws_instance_count}",
-#       "export domain_name=${var.domain_name}",
-#       "export mongo_user=${var.mongo_user}",
-#       "export mongo_password=${var.mongo_password}",
-#       "${file("${path.module}/scripts/init.sh")}",
-#     ]
-#   }
+# resource "aws_instance" "bastion_instance" {
+#   ami                    = var.aws_ami_id
+#   instance_type          = var.aws_instance_type
+#   vpc_security_group_ids = [ aws_security_group.mongodb_sg.id ]
+#   subnet_id              = data.aws_subnet.mongo_db_public.id
+#   key_name               = aws_key_pair.ssh_key.key_name
+#   tags = {
+#     Name    = "bastion-instance"
+#   } 
 # }
