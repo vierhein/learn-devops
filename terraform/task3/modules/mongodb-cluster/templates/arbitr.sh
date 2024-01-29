@@ -1,3 +1,4 @@
+#!/bin/bash
 MONGO_USER="admin"
 MONGO_PASSWORD="password"
 S3_BACKUP_BUCKET="backup-mongo-andrew2"

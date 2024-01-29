@@ -51,7 +51,7 @@ data "template_cloudinit_config" "config" {
   }
   
   part {
-    filename     = "init.cfg"
+    filename     = "init.sh"
     content_type = "text/x-shellscript"
     content       = element(data.template_file.script.*.rendered, count.index)
   }
@@ -68,7 +68,7 @@ data "template_cloudinit_config" "arbitr" {
   }
   
   part {
-    filename     = "arbitr.cfg"
+    filename     = "arbitr.sh"
     content_type = "text/x-shellscript"
     content       = "${data.template_file.arbitr.rendered}"
   }
