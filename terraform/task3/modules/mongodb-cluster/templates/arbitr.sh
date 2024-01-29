@@ -1,8 +1,9 @@
 MONGO_USER="admin"
 MONGO_PASSWORD="password"
 S3_BACKUP_BUCKET="backup-mongo-andrew2"
+DNS_NAME="arbitr.example.io"
 
-sudo hostnamectl set-hostname arbitr.example.io
+sudo hostnamectl set-hostname $DNS_NAME
 
 # Start MongoDB
 sudo systemctl daemon-reload
@@ -54,7 +55,7 @@ processManagement:
 # network interfaces
 net:
   port: 27017
-  bindIp: 127.0.0.1,arbitr.example.io # Enter 0.0.0.0,:: to bind to all IPv4 and IPv6 addresses or, alternatively, use the net.bindIpAll setting.
+  bindIp: 127.0.0.1,$DNS_NAME # Enter 0.0.0.0,:: to bind to all IPv4 and IPv6 addresses or, alternatively, use the net.bindIpAll setting.
   unixDomainSocket:
      enabled: true
      pathPrefix: /var/run/mongodb
