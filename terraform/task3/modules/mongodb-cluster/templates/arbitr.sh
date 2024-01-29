@@ -1,8 +1,8 @@
 #!/bin/bash
-MONGO_USER="admin"
-MONGO_PASSWORD="password"
+MONGO_USER="${mongo_user}"
+MONGO_PASSWORD="${mongo_password}"
 S3_BACKUP_BUCKET="backup-mongo-andrew2"
-DNS_NAME="arbitr.example.io"
+DNS_NAME="mongo3.example.io"
 
 sudo hostnamectl set-hostname $DNS_NAME
 
@@ -31,8 +31,6 @@ sudo chown -R mongod:mongod /etc/mongodb
 sudo aws s3 cp s3://$S3_BACKUP_BUCKET/mongoCA.crt /etc/mongodb/ssl
 sudo aws s3 cp s3://$S3_BACKUP_BUCKET/mongo.pem /etc/mongodb/ssl
 
-sudo mkdir -p /var/lib/mongo/arb
-
 cat <<EOF | sudo tee /etc/mongod.conf
 # mongod.conf
 
@@ -47,7 +45,7 @@ systemLog:
 
 # Where and how to store data.
 storage:
-  dbPath: /var/lib/mongo/arb
+  dbPath: /var/lib/mongo
 
 # how the process runs
 processManagement:
@@ -84,19 +82,23 @@ EOF
 
 sudo systemctl restart mongod
 
-sleep 60
+sleep 120
 
 sudo mongosh admin --tls --tlsCAFile /etc/mongodb/ssl/mongoCA.crt --tlsCertificateKeyFile /etc/mongodb/ssl/mongo.pem -u $MONGO_USER -p $MONGO_PASSWORD --host mongo1.example.io <<EOF
 db.adminCommand({
   "setDefaultRWConcern" : 1,
   "defaultWriteConcern" : {
     "w" : 2
-  },
-  "defaultReadConcern" : { "level" : "majority" }
+  }
 })
 EOF
 
-sleep 2
+sleep 3
 sudo mongosh admin --tls --tlsCAFile /etc/mongodb/ssl/mongoCA.crt --tlsCertificateKeyFile /etc/mongodb/ssl/mongo.pem -u $MONGO_USER -p $MONGO_PASSWORD --host mongo1.example.io <<EOF
-rs.addArb("arbitr.example.io:27017")
+rs.addArb("$DNS_NAME:27017")
+EOF
+
+sleep 3
+sudo mongosh admin --tls --tlsCAFile /etc/mongodb/ssl/mongoCA.crt --tlsCertificateKeyFile /etc/mongodb/ssl/mongo.pem -u $MONGO_USER -p $MONGO_PASSWORD --host mongo1.example.io <<EOF
+rs.conf()
 EOF

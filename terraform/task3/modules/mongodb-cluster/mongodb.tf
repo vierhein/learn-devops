@@ -37,6 +37,11 @@ data "template_file" "script" {
 
 data "template_file" "arbitr" {
   template = "${file("${path.module}/templates/arbitr.sh")}"
+  
+  vars = {
+    mongo_user="${var.mongo_user}",
+    mongo_password="${var.mongo_password}",
+  }
 }
 
 data "template_cloudinit_config" "config" {
@@ -136,7 +141,7 @@ resource "aws_instance" "arbitr_instance" {
     Name    = "arbitr-instance"
   }
 
-  user_data_base64 = "${data.template_cloudinit_config.arbitr.rendered}"
+  user_data = "${data.template_cloudinit_config.arbitr.rendered}"
 }
 
 resource "aws_instance" "bastion_instance" {

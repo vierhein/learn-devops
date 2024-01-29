@@ -26,7 +26,7 @@ resource "aws_route53_record" "mongodb_record" {
 
 resource "aws_route53_record" "arbitr_record" {
   zone_id = aws_route53_zone.private.zone_id
-  name    = "arbitr" 
+  name    = "mongo3" 
 
   type    = "A"
   ttl     = 300
