@@ -23,3 +23,12 @@ resource "aws_route53_record" "mongodb_record" {
   ttl     = 300
   records = ["${aws_instance.mongodb_instance[count.index].private_ip}"]
 }
+
+resource "aws_route53_record" "arbitr_record" {
+  zone_id = aws_route53_zone.private.zone_id
+  name    = "arbitr" 
+
+  type    = "A"
+  ttl     = 300
+  records = ["${aws_instance.arbitr_instance.private_ip}"]
+}

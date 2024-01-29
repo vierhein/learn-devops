@@ -35,6 +35,10 @@ data "template_file" "script" {
   }
 }
 
+data "template_file" "arbitr" {
+  template = "${file("${path.module}/templates/arbitr.sh")}"
+}
+
 data "template_cloudinit_config" "config" {
   gzip          = true
   base64_encode = true
@@ -50,6 +54,23 @@ data "template_cloudinit_config" "config" {
     filename     = "init.cfg"
     content_type = "text/x-shellscript"
     content       = element(data.template_file.script.*.rendered, count.index)
+  }
+}
+
+data "template_cloudinit_config" "arbitr" {
+  gzip          = true
+  base64_encode = true
+
+  part {
+    filename     = "conf.cfg"
+    content_type = "text/cloud-config"
+    content      = "${data.template_file.conf.rendered}"
+  }
+  
+  part {
+    filename     = "arbitr.cfg"
+    content_type = "text/x-shellscript"
+    content       = "${data.template_file.arbitr.rendered}"
   }
 }
 
@@ -103,13 +124,28 @@ resource "aws_security_group" "mongodb_sg" {
   }
 }
 
-# resource "aws_instance" "bastion_instance" {
-#   ami                    = var.aws_ami_id
-#   instance_type          = var.aws_instance_type
-#   vpc_security_group_ids = [ aws_security_group.mongodb_sg.id ]
-#   subnet_id              = data.aws_subnet.mongo_db_public.id
-#   key_name               = aws_key_pair.ssh_key.key_name
-#   tags = {
-#     Name    = "bastion-instance"
-#   } 
-# }
+resource "aws_instance" "arbitr_instance" {
+  ami                    = var.aws_ami_id
+  instance_type          = var.aws_instance_type
+  vpc_security_group_ids = [ aws_security_group.mongodb_sg.id ]
+  subnet_id              = data.aws_subnet.mongo_db_private.id
+  key_name               = aws_key_pair.ssh_key.key_name
+  iam_instance_profile   = aws_iam_instance_profile.ec2_profile.name
+  
+  tags = {
+    Name    = "arbitr-instance"
+  }
+
+  user_data_base64 = "${data.template_cloudinit_config.arbitr.rendered}"
+}
+
+resource "aws_instance" "bastion_instance" {
+  ami                    = var.aws_ami_id
+  instance_type          = var.aws_instance_type
+  vpc_security_group_ids = [ aws_security_group.mongodb_sg.id ]
+  subnet_id              = data.aws_subnet.mongo_db_public.id
+  key_name               = aws_key_pair.ssh_key.key_name
+  tags = {
+    Name    = "bastion-instance"
+  }
+}
