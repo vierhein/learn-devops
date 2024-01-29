@@ -15,8 +15,11 @@ data "aws_iam_policy_document" "iam_policy_ec2_instance_document"{
     effect = "Allow"
     actions = ["ec2:DescribeInstances",
                "ec2:DescribeTags",
-               "S3:*"]
-    resources = ["*"]
+               "s3:GetObject",
+               "s3:PutObject",
+               "s3:DeleteObject",
+               "s3:DeleteObjects"]
+    resources = ["arn:aws:s3:::backup-mongo-andrew2/*"]
   }
 
 }
