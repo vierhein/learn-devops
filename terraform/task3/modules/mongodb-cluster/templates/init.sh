@@ -1,0 +1,166 @@
+#!/bin/bash
+DOMAIN_NAME="${domain_name}"
+NUM_HOSTS="${num_hosts}"
+NUM_HOST_CURRENT="${num_host_current}"
+DNS_NAME="mongo${num_host_current}.${domain_name}"
+MONGO_USER="${mongo_user}"
+MONGO_PASSWORD="${mongo_password}"
+S3_BACKUP_BUCKET="backup-mongo-andrew2"
+
+sudo hostnamectl set-hostname $DNS_NAME
+
+# Start MongoDB
+sudo systemctl daemon-reload
+sudo systemctl start mongod
+chkconfig mongod on
+
+sleep 30 #wait mongosh access 
+
+sudo mongosh <<EOF
+use admin
+db.createUser(
+  {
+    user: "$MONGO_USER",
+    pwd: "$MONGO_PASSWORD", 
+    roles: [ { role: "root", db: "admin" }]
+  }
+)
+EOF
+
+#Copy SSL certificates
+sudo mkdir -p /etc/mongodb/ssl
+sudo chmod 700 /etc/mongodb/ssl
+sudo chown -R mongod:mongod /etc/mongodb
+sudo aws s3 cp s3://$S3_BACKUP_BUCKET/mongoCA.crt /etc/mongodb/ssl
+sudo aws s3 cp s3://$S3_BACKUP_BUCKET/mongo.pem /etc/mongodb/ssl
+
+#disable Transparent Huge Pages and THP defragmentation on a Linux system
+cat <<EOF | sudo tee -a /etc/rc.local
+if test -f /sys/kernel/mm/transparent_hugepage/enabled; then
+    echo never > /sys/kernel/mm/transparent_hugepage/enabled
+fi
+if test -f /sys/kernel/mm/transparent_hugepage/defrag; then
+    echo never > /sys/kernel/mm/transparent_hugepage/defrag
+fi
+exit 0
+EOF
+
+sudo chmod +x /etc/rc.local
+
+#set soft limit for the number of processes
+echo "mongod soft nproc 64000" | sudo tee -a /etc/security/limits.conf
+echo "vm.max_map_count=262144" | sudo tee -a /etc/sysctl.conf
+sudo sysctl -p
+sysctl vm.max_map_count
+
+#Update mongod.conf
+cat <<EOF | sudo tee /etc/mongod.conf
+# mongod.conf
+
+# for documentation of all options, see:
+#   http://docs.mongodb.org/manual/reference/configuration-options/
+
+# where to write logging data.
+systemLog:
+  destination: file
+  logAppend: true
+  path: /var/log/mongodb/mongod.log
+
+# Where and how to store data.
+storage:
+  dbPath: /var/lib/mongo
+
+# how the process runs
+processManagement:
+  timeZoneInfo: /usr/share/zoneinfo
+
+# network interfaces
+net:
+  port: 27017
+  bindIp: 127.0.0.1,$DNS_NAME # Enter 0.0.0.0,:: to bind to all IPv4 and IPv6 addresses or, alternatively, use the net.bindIpAll setting.
+  unixDomainSocket:
+     enabled: true
+     pathPrefix: /var/run/mongodb
+  ssl:
+     mode: requireTLS
+     PEMKeyFile: /etc/mongodb/ssl/mongo.pem
+     CAFile: /etc/mongodb/ssl/mongoCA.crt
+     clusterFile: /etc/mongodb/ssl/mongo.pem
+
+security:
+  authorization: enabled
+  clusterAuthMode: x509
+
+#operationProfiling:
+
+replication:
+  replSetName: agencyMeshAppMongodb
+
+#sharding:
+
+## Enterprise-Only Options
+
+#auditLog:
+EOF
+
+sudo systemctl restart mongod
+
+if [[ $NUM_HOST_CURRENT -eq 1 ]] && [ $NUM_HOSTS -gt 1 ]; then
+    sleep 20
+    #Generate settings
+    for ((i = 0; i < NUM_HOSTS; i++)); do
+        ARRAY+="{ _id: $i, host: \"mongo$((i + 1)).$DOMAIN_NAME:27017\" },"
+    done
+    RESULT_SETTINGS=$(echo $ARRAY | sed 's/.$//')
+
+    #Apply settings
+    sudo mongosh admin --tls --tlsCAFile /etc/mongodb/ssl/mongoCA.crt --tlsCertificateKeyFile /etc/mongodb/ssl/mongo.pem -u $MONGO_USER -p $MONGO_PASSWORD --host mongo1.example.io <<EOF
+    rs.initiate( {
+    _id : "agencyMeshAppMongodb",
+    members: [ $RESULT_SETTINGS ]
+    })
+EOF
+    sleep 2
+    sudo mongosh admin --tls --tlsCAFile /etc/mongodb/ssl/mongoCA.crt --tlsCertificateKeyFile /etc/mongodb/ssl/mongo.pem -u $MONGO_USER -p $MONGO_PASSWORD --host mongo1.example.io <<EOF
+    rs.conf()
+EOF
+fi
+
+if [[ $NUM_HOST_CURRENT -eq $NUM_HOSTS ]]; then
+    sudo yum install -y cronie
+    source /etc/profile
+    sudo systemctl start crond.service
+    sudo mkdir -p /opt/backup/data
+    sudo mkdir -p /opt/backup/script
+    
+    cat <<EOF | sudo tee /opt/backup/script/backup_script.sh
+    #!/bin/bash
+    # Define MongoDB dynamicly connection details
+    MONGO_USER=$MONGO_USER
+    MONGO_PASSWORD=$MONGO_PASSWORD
+    DNS_BACKUP=$DNS_NAME
+    S3_BACKUP_BUCKET=$S3_BACKUP_BUCKET
+EOF
+    cat <<'EOF' | sudo tee -a /opt/backup/script/backup_script.sh
+    # Define MongoDB connection details
+    MONGO_PORT="27017"
+    CAFile="/etc/mongodb/ssl/mongoCA.crt"
+    CertificateKeyFile=/etc/mongodb/ssl/mongo.pem
+    current_day=$(date +'%d')
+    current_month=$(date +'%m')
+    current_year=$(date +'%Y')
+    
+    DIRECTORY="/opt/backup/data"
+
+    # Perform mongodump
+    sudo mongodump --ssl --sslCAFile $CAFile --sslPEMKeyFile $CertificateKeyFile  --host=$DNS_BACKUP --port=27017 --username=$MONGO_USER --password=$MONGO_PASSWORD --authenticationDatabase=admin --oplog --out=$DIRECTORY/mongodump-$current_day-$current_month-$current_year   
+    sudo tar -czvf $DIRECTORY/mongodump-$current_day-$current_month-$current_year.tar.gz $DIRECTORY/mongodump-$current_day-$current_month-$current_year
+    sudo aws s3 cp $DIRECTORY/mongodump-$current_day-$current_month-$current_year.tar.gz s3://$S3_BACKUP_BUCKET
+    sudo rm -rf $DIRECTORY/*
+    echo "Backup completed successfully." 
+EOF
+    sudo chmod +x /opt/backup/script/backup_script.sh
+    CRON_JOB="*/30 * * * * /opt/backup/script/backup_script.sh >> /opt/backup/script/backup_script.log 2>&1"
+    # Add the cron job
+    (sudo crontab -l ; echo "$CRON_JOB") | sudo crontab -
+fi
