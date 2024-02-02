@@ -17,3 +17,9 @@ resource "aws_route" "route_to_vpc_one" {
   destination_cidr_block    = aws_subnet.private_subnet_two.cidr_block
   vpc_peering_connection_id = aws_vpc_peering_connection.vpc_peering.id
 }
+
+resource "aws_route" "route_to_vpc_two" {
+  route_table_id            = aws_route_table.private_route_table_two.id
+  destination_cidr_block    = aws_subnet.private_subnet_one.cidr_block
+  vpc_peering_connection_id = aws_vpc_peering_connection.vpc_peering.id
+}
