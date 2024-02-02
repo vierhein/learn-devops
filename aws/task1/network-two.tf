@@ -2,6 +2,8 @@
 resource "aws_vpc" "vpc_two" {
   cidr_block       = var.vpc_cidr_block_two
   instance_tenancy = "default"
+  enable_dns_support   = true
+  enable_dns_hostnames = true
 
   tags = {
     Name = "vpc-two"
