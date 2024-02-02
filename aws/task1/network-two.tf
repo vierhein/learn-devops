@@ -10,18 +10,6 @@ resource "aws_vpc" "vpc_two" {
   }
 }
 
-# Create public subnet
-resource "aws_subnet" "public_subnet_two" {
-  vpc_id                  = aws_vpc.vpc_two.id
-  cidr_block              = var.public_subnet_two_cidr_block
-  availability_zone       = "eu-central-1a"
-  map_public_ip_on_launch = true
-
-  tags = {
-    Name = "public-subnet-two"
-  }
-}
-
 # Create private subnet
 resource "aws_subnet" "private_subnet_two" {
   vpc_id                  = aws_vpc.vpc_two.id
@@ -33,40 +21,12 @@ resource "aws_subnet" "private_subnet_two" {
   }
 }
 
-# Internet Gateway for public subnet
-resource "aws_internet_gateway" "igw_two" {
-  vpc_id = aws_vpc.vpc_two.id
-
-  tags = {
-    Name = "igw-two"
-  }
-}
-
-# Attach Internet Gateway to public subnet
-resource "aws_route_table" "public_route_table_two" {
-  vpc_id = aws_vpc.vpc_two.id
-
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.igw_two.id
-  }
-
-  tags = {
-    Name = "public-route-table-two"
-  }
-}
-
 resource "aws_route_table" "private_route_table_two" {
   vpc_id = aws_vpc.vpc_two.id
 
   tags = {
     Name = "private-route-table-two"
   }
-}
-
-resource "aws_route_table_association" "public_subnet_two_association" {
-  subnet_id      = aws_subnet.public_subnet_two.id
-  route_table_id = aws_route_table.public_route_table_two.id
 }
 
 resource "aws_route_table_association" "private_subnet_two_association" {
@@ -94,21 +54,5 @@ resource "aws_security_group" "private_sg_two" {
 
   tags = {
     Name = "private-sg-two"
-  }
-}
-
-# Security Group for instances in public subnet
-resource "aws_security_group" "public_sg_two" {
-  vpc_id = aws_vpc.vpc_two.id
-
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name = "public-sg-two"
   }
 }
