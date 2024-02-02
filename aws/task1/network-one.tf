@@ -4,7 +4,7 @@ resource "aws_vpc" "vpc_one" {
   instance_tenancy = "default"
 
   tags = {
-    Name = "vpc-1"
+    Name = "vpc-one"
   }
 }
 
@@ -73,8 +73,15 @@ resource "aws_route_table_association" "private_subnet_one_association" {
 }
 
 # Security Group for instances in private subnet
-resource "aws_security_group" "private_sg" {
+resource "aws_security_group" "private_sg_one" {
   vpc_id = aws_vpc.vpc_one.id
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
   egress {
     from_port   = 0
@@ -89,7 +96,7 @@ resource "aws_security_group" "private_sg" {
 }
 
 # Security Group for instances in public subnet
-resource "aws_security_group" "public_sg" {
+resource "aws_security_group" "public_sg_one" {
   vpc_id = aws_vpc.vpc_one.id
 
   ingress {
