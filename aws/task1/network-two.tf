@@ -16,7 +16,7 @@ resource "aws_subnet" "public_subnet_two" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "public-subnet"
+    Name = "public-subnet-two"
   }
 }
 
@@ -27,7 +27,7 @@ resource "aws_subnet" "private_subnet_two" {
   availability_zone       = "eu-central-1b"
 
   tags = {
-    Name = "private-subnet"
+    Name = "private-subnet-two"
   }
 }
 
@@ -91,7 +91,7 @@ resource "aws_security_group" "private_sg_two" {
   }
 
   tags = {
-    Name = "private-sg"
+    Name = "private-sg-two"
   }
 }
 
@@ -107,6 +107,6 @@ resource "aws_security_group" "public_sg_two" {
   }
 
   tags = {
-    Name = "public-sg"
+    Name = "public-sg-two"
   }
 }
