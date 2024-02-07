@@ -22,7 +22,7 @@ variable "ecs_auto_scale_role_name" {
 }
 variable "app_image" {
     description = "Docker image to run in the ECS cluster"
-    default = "nginx:latest"
+    default = "357197750522.dkr.ecr.eu-central-1.amazonaws.com/test:latest"
 }
 variable "app_port" {
     description = "Port exposed by the docker image to redirect traffic to"
