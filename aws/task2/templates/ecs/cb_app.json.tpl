@@ -14,7 +14,7 @@
     "secrets": [
       {
         "name": "environment_secrets",
-        "valueFrom": "arn:aws:secretsmanager:eu-central-1:357197750522:secret:test-57GDMj"
+        "valueFrom": ${secret_manager_name}
       }
     ],
     "environment": [
