@@ -4,11 +4,12 @@ resource "aws_ecs_cluster" "main" {
 
 locals {
     vars = {
-        app_image      = var.app_image
-        app_port       = var.app_port
-        fargate_cpu    = var.fargate_cpu
-        fargate_memory = var.fargate_memory
-        aws_region     = var.aws_region
+        app_image           = var.app_image
+        app_port            = var.app_port
+        fargate_cpu         = var.fargate_cpu
+        fargate_memory      = var.fargate_memory
+        aws_region          = var.aws_region
+        secret_manager_name = var.secret_manager_name
     }
     template = templatefile("./templates/ecs/cb_app.json.tpl", local.vars)
 }

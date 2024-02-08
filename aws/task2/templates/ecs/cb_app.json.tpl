@@ -14,7 +14,7 @@
     "secrets": [
       {
         "name": "environment_secrets",
-        "valueFrom": ${secret_manager_name}
+        "valueFrom": "${secret_manager_name}"
       }
     ],
     "environment": [
