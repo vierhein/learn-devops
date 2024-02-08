@@ -1,5 +1,5 @@
 resource "aws_iam_role" "ecs_task_execution_role" {
-  name = "role-name"
+  name = "ecs_task_execution_role"
  
   assume_role_policy = <<EOF
 {
@@ -18,7 +18,7 @@ resource "aws_iam_role" "ecs_task_execution_role" {
 EOF
 }
 resource "aws_iam_role" "ecs_task_role" {
-  name = "role-name-task"
+  name = "ecs_task_role"
  
   assume_role_policy = <<EOF
 {
@@ -37,11 +37,12 @@ resource "aws_iam_role" "ecs_task_role" {
 EOF
 }
  
-resource "aws_iam_role_policy_attachment" "ecs-task-execution-role-policy-attachment" {
+resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy_attachment" {
   role       = aws_iam_role.ecs_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
-resource "aws_iam_role_policy_attachment" "task_s3" {
-  role       = "${aws_iam_role.ecs_task_role.name}"
-  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+
+resource "aws_iam_role_policy_attachment" "ecs_get_secret_role_policy_attachment" {
+  role       = aws_iam_role.ecs_task_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/SecretsManagerReadWrite"
 }

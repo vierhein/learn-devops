@@ -37,5 +37,5 @@ resource "aws_ecs_service" "main" {
         assign_public_ip = true
     }
 
-    depends_on = [aws_iam_role_policy_attachment.ecs-task-execution-role-policy-attachment]
+    depends_on = [aws_iam_role_policy_attachment.ecs_task_execution_role_policy_attachment, aws_iam_role_policy_attachment.ecs_get_secret_role_policy_attachment]
 }
