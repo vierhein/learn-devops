@@ -11,9 +11,17 @@
         "hostPort": ${app_port}
       }
     ],
-    "secrets": [{
-      "name": "environment_secrets",
-      "valueFrom": "arn:aws:secretsmanager:eu-central-1:357197750522:secret:test-57GDMj"
-    }]
+    "secrets": [
+      {
+        "name": "environment_secrets",
+        "valueFrom": "arn:aws:secretsmanager:eu-central-1:357197750522:secret:test-57GDMj"
+      }
+    ],
+    "environment": [
+      {
+        "name": "variablelocal",
+        "value": "value123"
+      }
+    ]
   }
 ]
