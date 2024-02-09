@@ -34,25 +34,3 @@ resource "aws_route_table_association" "private_subnet_one_association" {
   route_table_id = aws_route_table.private_route_table_one.id
 }
 
-# Security Group for instances in private subnet
-resource "aws_security_group" "private_sg_one" {
-  vpc_id = aws_vpc.vpc_one.id
-
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name = "private-sg-one"
-  }
-}
