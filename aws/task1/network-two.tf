@@ -45,12 +45,12 @@ resource "aws_security_group" "private_sg_two" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+  # egress {
+  #   from_port   = 0
+  #   to_port     = 0            # only first instance has access to second 
+  #   protocol    = "-1"
+  #   cidr_blocks = ["0.0.0.0/0"]
+  # }
 
   tags = {
     Name = "private-sg-two"
