@@ -4,7 +4,7 @@ variable "aws_region" {}
 
 variable "vpc_cidr_block_one" {}
 variable "public_subnet_one_cidr_block" {}
-variable "private_subnet_one_cidr_block" {}
+variable "public_subnet_two_cidr_block" {}
 
 variable "app_image" {
     description = "Docker image to run in the ECS cluster"

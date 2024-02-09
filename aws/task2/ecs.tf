@@ -37,5 +37,11 @@ resource "aws_ecs_service" "main" {
         assign_public_ip = true
     }
 
-    depends_on = [aws_iam_role_policy_attachment.ecs_task_execution_role_policy_attachment, aws_iam_role_policy_attachment.ecs_get_secret_role_policy_attachment]
+    load_balancer {
+        target_group_arn = aws_alb_target_group.app.id
+        container_name   = "cb-app"
+        container_port   = var.app_port
+    }
+
+    depends_on = [aws_alb_listener.front_end, aws_iam_role_policy_attachment.ecs_task_execution_role_policy_attachment, aws_iam_role_policy_attachment.ecs_get_secret_role_policy_attachment]
 }
