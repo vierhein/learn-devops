@@ -14,9 +14,9 @@ variable "app_port" {
     description = "Port exposed by the docker image to redirect traffic to"
     default = 80
 }
-variable "app_count" {
+variable "app_desired" {
     description = "Number of docker containers to run"
-    default = 1
+    default = 3
 }
 variable "fargate_cpu" {
     default = "256"
