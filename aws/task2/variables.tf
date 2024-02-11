@@ -24,8 +24,3 @@ variable "fargate_cpu" {
 variable "fargate_memory" {
     default = "512"
 }
-
-variable "secret_manager_name" {
-    description = "Secret Manager name"
-    default = "arn:aws:secretsmanager:eu-central-1:357197750522:secret:test-57GDMj"
-}
