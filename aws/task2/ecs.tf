@@ -9,7 +9,7 @@ locals {
         fargate_cpu         = var.fargate_cpu
         fargate_memory      = var.fargate_memory
         aws_region          = var.aws_region
-        secret_manager_arn  = aws_secretsmanager_secret.cb_secret.arn
+        secret_manager_arn  = "arn:aws:secretsmanager:eu-central-1:357197750522:secret:prod-6hSnru" #aws_secretsmanager_secret.cb_secret.arn
     }
     template = templatefile("./templates/ecs/cb_app.json.tpl", local.vars)
 }
@@ -23,7 +23,7 @@ resource "aws_ecs_task_definition" "app" {
     memory                   = var.fargate_memory
     container_definitions    = local.template
 
-    depends_on = [aws_secretsmanager_secret.cb_secret]
+    # depends_on = [aws_secretsmanager_secret.cb_secret]
 }
 
 resource "aws_ecs_service" "main" {

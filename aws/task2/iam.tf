@@ -86,12 +86,76 @@ resource "aws_iam_role_policy_attachment" "ecs_autoscale_role_policy_attachment"
 #   }
 # }
 
+# data "aws_iam_policy_document" "policy_secretmanager_read_role" {
+#   statement {
+#     effect    = "Allow"
+#     actions   = [
+#         "secretsmanager:*"
+#     ]
+#     resources = ["*"]
+#   }
+# }
+
 # resource "aws_iam_policy" "policy_task_execution_role" {
 #   name        = "policy_task_execution_role"
 #   policy      = data.aws_iam_policy_document.policy_task_execution_role.json
 # }
 
-# resource "aws_iam_role_policy_attachment" "test-attach" {
+# resource "aws_iam_policy" "policy_secretmanager_read_role" {
+#   name        = "policy_secretmanager_read"
+#   policy      = data.aws_iam_policy_document.policy_secretmanager_read_role.json
+# }
+
+# resource "aws_iam_role_policy_attachment" "policy_task_execution_role-attach" {
 #   role       = aws_iam_role.ecs_task_execution_role.name
 #   policy_arn = aws_iam_policy.policy_task_execution_role.arn
+# }
+
+# resource "aws_iam_role_policy_attachment" "policy_secretmanager_read_role-attach" {
+#   role       = aws_iam_role.ecs_task_execution_role.name
+#   policy_arn = aws_iam_policy.policy_secretmanager_read_role.arn
+# }
+
+# #######
+# # autoscale
+
+# data "aws_iam_policy_document" "assume_ecs_autoscale_role" {
+#   statement {
+#     effect = "Allow"
+
+#     principals {
+#       type        = "Service"
+#       identifiers = ["application-autoscaling.amazonaws.com"]
+#     }
+
+#     actions = ["sts:AssumeRole"]
+#   }
+# }
+
+# resource "aws_iam_role" "ecs_autoscale_role" {
+#   name               = "ecs_autoscale_role"
+#   assume_role_policy = data.aws_iam_policy_document.assume_ecs_autoscale_role.json
+# }
+
+# data "aws_iam_policy_document" "policy_autoscale_role" {
+#   statement {
+#     effect    = "Allow"
+#     actions   = [
+#         "ecs:DescribeServices",
+#         "ecs:UpdateService",
+#         "cloudwatch:DescribeAlarms",
+#         "cloudwatch:PutMetricAlarm"
+#     ]
+#     resources = ["*"]
+#   }
+# }
+
+# resource "aws_iam_policy" "policy_autoscale_role" {
+#   name        = "policy_autoscale_role"
+#   policy      = data.aws_iam_policy_document.policy_autoscale_role.json
+# }
+
+# resource "aws_iam_role_policy_attachment" "policy_autoscale_role-attach" {
+#   role       = aws_iam_role.ecs_autoscale_role.name
+#   policy_arn = aws_iam_policy.policy_autoscale_role.arn
 # }
