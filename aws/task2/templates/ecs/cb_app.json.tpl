@@ -13,8 +13,12 @@
     ],
     "secrets": [
       {
-        "name": "environment_secrets",
-        "valueFrom": "${secret_manager_arn}"
+        "name": "environment_var1",
+        "valueFrom": "${secret_value_key1}"
+      },
+      {
+        "name": "environment_var2",
+        "valueFrom": "${secret_value_key2}"
       }
     ],
     "environment": [
