@@ -13,7 +13,7 @@ resource "aws_vpc" "vpc_one" {
 # Create private subnet
 resource "aws_subnet" "private_subnet_one" {
   vpc_id                  = aws_vpc.vpc_one.id
-  cidr_block              = var.private_subnet_one_cidr_block
+  cidr_block              = cidrsubnet(var.vpc_cidr_block_one, 4, var.subnet_count)
   availability_zone       = "eu-central-1b"
 
   tags = {

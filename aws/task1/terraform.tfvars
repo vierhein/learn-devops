@@ -7,7 +7,4 @@ public_key_path    = "~/.ssh/id_ed25519.pub"
 vpc_cidr_block_one = "10.1.0.0/24"
 vpc_cidr_block_two = "10.2.0.0/24"
 
-public_subnet_one_cidr_block   = "10.1.0.0/28"
-private_subnet_one_cidr_block  = "10.1.0.128/28"
-public_subnet_two_cidr_block   = "10.2.0.0/28"
-private_subnet_two_cidr_block  = "10.2.0.128/28"
+subnet_count = 1
