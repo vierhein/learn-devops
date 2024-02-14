@@ -8,3 +8,5 @@ vpc_cidr_block_one = "10.1.0.0/24"
 vpc_cidr_block_two = "10.2.0.0/24"
 
 subnet_count = 1
+
+access_each_other = true

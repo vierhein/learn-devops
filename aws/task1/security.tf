@@ -52,13 +52,12 @@ resource "aws_security_group_rule" "sg_two_allow_ssh" {
   security_group_id = aws_security_group.private_sg_two.id
 }
 
-# Now only first instance has access to second. Uncoment rule below to access each other
-
-# resource "aws_security_group_rule" "sg_two_allow_all" {
-#   type              = "egress"
-#   from_port         = 0
-#   to_port           = 0
-#   protocol          = "-1"
-#   cidr_blocks       = ["0.0.0.0/0"]
-#   security_group_id = aws_security_group.private_sg_two.id
-# }
+resource "aws_security_group_rule" "sg_two_allow_all" {
+  count             = var.access_each_other ? 1 : 0
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.private_sg_two.id
+}

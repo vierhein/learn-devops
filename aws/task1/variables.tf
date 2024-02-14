@@ -11,3 +11,5 @@ variable "vpc_cidr_block_one" {}
 variable "vpc_cidr_block_two" {}
 
 variable "subnet_count" {}
+
+variable "access_each_other" {}
