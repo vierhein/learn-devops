@@ -1,11 +1,17 @@
-resource "aws_secretsmanager_secret" "cb_secret" {
-  name = "cb-secret-3"
+data "aws_secretsmanager_secret_version" "current" {
+  secret_id = var.secret_manager_arn
 }
 
-resource "aws_secretsmanager_secret_version" "cb_secret_version" {
-  secret_id     = aws_secretsmanager_secret.cb_secret.id
-  secret_string = jsonencode({
-    key1 = "first-secret-value",
-    key2 = "second-secret-value"
-  })
+locals {
+  parsed_json = jsondecode(data.aws_secretsmanager_secret_version.current.secret_string)
+  
+  transformed_json = [
+    for key, value in local.parsed_json :
+    {
+      name      = key
+      valueFrom = join("", ["${var.secret_manager_arn}", ":", key,"::"])
+    }
+  ]
+
+  transformed_string = jsonencode(local.transformed_json)
 }

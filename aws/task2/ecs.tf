@@ -2,7 +2,6 @@ resource "aws_ecs_cluster" "main" {
     name = "cb-cluster"
 }
 
-
 locals {
     vars = {
         app_image           = var.app_image
@@ -10,8 +9,7 @@ locals {
         fargate_cpu         = var.fargate_cpu
         fargate_memory      = var.fargate_memory
         aws_region          = var.aws_region
-        secret_value_key1   = join("", ["${aws_secretsmanager_secret.cb_secret.arn}", ":key1::"])
-        secret_value_key2   = join("", ["${aws_secretsmanager_secret.cb_secret.arn}", ":key2::"])
+        secrets_arn         = local.transformed_string
     }
     template = templatefile("./templates/ecs/cb_app.json.tpl", local.vars)
 }
@@ -24,8 +22,6 @@ resource "aws_ecs_task_definition" "app" {
     cpu                      = var.fargate_cpu
     memory                   = var.fargate_memory
     container_definitions    = local.template
-
-    depends_on = [aws_secretsmanager_secret.cb_secret]
 }
 
 resource "aws_ecs_service" "main" {
