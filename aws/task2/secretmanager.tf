@@ -3,15 +3,15 @@ data "aws_secretsmanager_secret_version" "current" {
 }
 
 locals {
-  parsed_json = jsondecode(data.aws_secretsmanager_secret_version.current.secret_string)
+  parsed_json_secret_manager = jsondecode(data.aws_secretsmanager_secret_version.current.secret_string)
   
-  transformed_json = [
-    for key, value in local.parsed_json :
+  new_json_secret_settings = [
+    for key, value in local.parsed_json_secret_manager :
     {
       name      = key
       valueFrom = join("", ["${var.secret_manager_arn}", ":", key,"::"])
     }
   ]
 
-  transformed_string = jsonencode(local.transformed_json)
+  transformed_secret_settings = jsonencode(local.new_json_secret_settings)
 }

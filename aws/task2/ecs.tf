@@ -9,7 +9,7 @@ locals {
         fargate_cpu         = var.fargate_cpu
         fargate_memory      = var.fargate_memory
         aws_region          = var.aws_region
-        secrets_arn         = local.transformed_string
+        secrets_arn         = local.transformed_secret_settings
     }
     template = templatefile("./templates/ecs/cb_app.json.tpl", local.vars)
 }
