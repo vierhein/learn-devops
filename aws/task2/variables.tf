@@ -3,8 +3,7 @@ variable "aws_secret_key" {}
 variable "aws_region" {}
 
 variable "vpc_cidr_block_one" {}
-variable "public_subnet_one_cidr_block" {}
-variable "public_subnet_two_cidr_block" {}
+variable "subnet_count" {}
 
 variable "app_image" {
     default = "357197750522.dkr.ecr.eu-central-1.amazonaws.com/test:latest"
