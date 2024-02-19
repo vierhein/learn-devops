@@ -1,6 +1,6 @@
 resource "aws_alb" "main" {
     name        = "cb-load-balancer"
-    subnets         = [aws_subnet.public_subnet_one.id, aws_subnet.public_subnet_two.id]
+    subnets         = aws_subnet.public_subnet.*.id
     security_groups = [aws_security_group.public_sg_one.id]
 }
 
