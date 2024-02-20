@@ -1,0 +1,26 @@
+variable "aws_access_key" {}
+variable "aws_secret_key" {}
+variable "aws_region" {}
+
+variable "vpc_cidr_block_one" {}
+variable "subnet_count" {}
+
+variable "app_image" {
+    default = "357197750522.dkr.ecr.eu-central-1.amazonaws.com/test:latest"
+}
+variable "app_port" {
+    default = 80
+}
+variable "app_desired" {
+    default = 3
+}
+variable "fargate_cpu" {
+    default = "256"
+}
+variable "fargate_memory" {
+    default = "512"
+}
+
+variable "secret_manager_arn" {
+    default = "arn:aws:secretsmanager:eu-central-1:357197750522:secret:prod2-2lk6i2"
+}
