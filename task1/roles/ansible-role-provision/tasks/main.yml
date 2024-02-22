@@ -9,12 +9,34 @@
       - ufw
     update_cache: yes
     state: present
-- name: Allow everything and enable UFW
-  community.general.ufw:
-    state: enabled
-    policy: allow
+
 - name: Allow port 22
   community.general.ufw:
     rule: allow
     port: '22'
     proto: tcp
+- name: Allow port 80
+  community.general.ufw:
+    rule: allow
+    port: '80'
+    proto: tcp
+- name: Allow port 443
+  community.general.ufw:
+    rule: allow
+    port: '443'
+    proto: tcp
+- name: Enable UFW
+  community.general.ufw:
+    state: enabled
+
+- name: Add the user-a
+  ansible.builtin.user:
+    name: user-a
+    shell: /bin/bash
+    create_home: true
+- name: Create ssh directory
+  ansible.builtin.file:
+    path: /home/user-a/.ssh
+    state: directory
+    mode: '0755'
+
