@@ -2,12 +2,5 @@
 - name: Install and Start Nginx
   hosts: all
   become: true
-
-  tasks:
-    - name: Install nginx, openssl
-      ansible.builtin.package:
-        name: 
-          - nginx
-          - openssl
-        update_cache: yes
-        state: present
+  roles:
+    - ansible-role-provision
