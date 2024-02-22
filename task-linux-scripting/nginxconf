@@ -21,7 +21,7 @@ server {
 
 	server_name site-a.local www.site-a.local;
 
-	root /home/jail/home/user-a/site-a/html;
+	root /var/www/site-a/html;
 	index index.php;
 
 	location ~ \.php$ {
@@ -48,7 +48,7 @@ server {
 
 	server_name site-b.local www.site-b.local;
 
-	root /home/jail/home/user-b/site-b/html;
+	root /var/www/site-b/html;
 	index index.html;
 
 	location / {
