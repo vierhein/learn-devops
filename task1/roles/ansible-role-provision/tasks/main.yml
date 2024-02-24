@@ -66,3 +66,31 @@
     group: user-a
     mode: '0644'
 
+#site-a
+- name: Create site-a directory
+  ansible.builtin.file:
+    path: /var/www/site-a/html
+    state: directory
+    owner: user-a
+    group: user-a
+    mode: '0755'
+
+#site-b
+- name: Create site-b directory
+  ansible.builtin.file:
+    path: /var/www/site-b/html
+    state: directory
+    owner: user-b
+    group: user-b
+    mode: '0755'
+
+- name: Copy index.php
+  ansible.builtin.copy:
+    src: files/index.php
+    dest: /var/www/site-a/html/index.php
+
+- name: Copy default nginx page
+  ansible.builtin.copy:
+    remote_src: true
+    src: /var/www/html/index.nginx-debian.html
+    dest: /var/www/site-b/html/index.html
