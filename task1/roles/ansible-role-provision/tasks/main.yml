@@ -1,12 +1,13 @@
 ---
 # tasks file for ansible-role-provision
 
-- name: Install nginx, openssl, ufw
+- name: Install nginx, openssl, ufw, php-fpm
   ansible.builtin.package:
     name: 
       - nginx
       - openssl
       - ufw
+      - php-fpm
     update_cache: yes
     state: present
 
@@ -94,3 +95,28 @@
     remote_src: true
     src: /var/www/html/index.nginx-debian.html
     dest: /var/www/site-b/html/index.html
+
+- name: Copy nginx conf
+  ansible.builtin.copy:
+    src: files/nginxconf
+    dest: /etc/nginx/sites-available/default
+
+- name: Copy cert
+  ansible.builtin.copy:
+    src: files/nginx-selfsigned.crt
+    dest: /etc/ssl/certs/nginx-selfsigned.crt
+- name: Copy key
+  ansible.builtin.copy:
+    src: files/nginx-selfsigned.key
+    dest: /etc/ssl/private/nginx-selfsigned.key
+
+- name: Copy logrotate
+  ansible.builtin.copy:
+    src: files/logrotateconf
+    dest: /etc/logrotate.d/nginx
+
+- name: Reload service nginx
+  ansible.builtin.systemd_service:
+    state: restarted
+    daemon_reload: true
+    name: nginx
