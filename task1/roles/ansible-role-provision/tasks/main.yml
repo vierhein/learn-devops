@@ -10,6 +10,7 @@
     update_cache: yes
     state: present
 
+# Configure firewall (allow SSH, HTTP, HTTPS)
 - name: Allow port 22
   community.general.ufw:
     rule: allow
@@ -29,6 +30,7 @@
   community.general.ufw:
     state: enabled
 
+# Add users for sites administration, set ssh keys
 - name: Add the user-a
   ansible.builtin.user:
     name: user-a
@@ -39,4 +41,28 @@
     path: /home/user-a/.ssh
     state: directory
     mode: '0755'
+- name: Copy file with owner and permissions
+  ansible.builtin.copy:
+    src: files/user-a-authorized_keys
+    dest: /home/user-a/.ssh/authorized_keys
+    owner: user-a
+    group: user-a
+    mode: '0644'
+- name: Add the user-a
+  ansible.builtin.user:
+    name: user-b
+    shell: /bin/bash
+    create_home: true
+- name: Create ssh directory
+  ansible.builtin.file:
+    path: /home/user-b/.ssh
+    state: directory
+    mode: '0755'
+- name: Copy file with owner and permissions
+  ansible.builtin.copy:
+    src: files/user-a-authorized_keys
+    dest: /home/user-b/.ssh/authorized_keys
+    owner: user-a
+    group: user-a
+    mode: '0644'
 
