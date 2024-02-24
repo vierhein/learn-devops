@@ -31,6 +31,18 @@
   community.general.ufw:
     state: enabled
 
+# Add users for run script
+- name: Add the user-run
+  ansible.builtin.user:
+    name: user-run
+    shell: /bin/bash
+    create_home: true
+# Set permission user-run for runnig script
+- name: Copy sudoers
+  ansible.builtin.copy:
+    src: files/sudoers-user
+    dest: /etc/sudoers.d/sudoers-user
+
 # Add users for sites administration, set ssh keys
 - name: Add the user-a
   ansible.builtin.user:
