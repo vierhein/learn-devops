@@ -16,9 +16,11 @@ path_ssh_key_user_2: "files/user-b-authorized_keys"
 
 path_index_php: "files/index.php"
 path_nginx_conf: "files/nginxconf"
-path_cert: "files/nginx-selfsigned.crt"
-path_key: "files/nginx-selfsigned.key"
 path_logrotate: "files/logrotateconf"
 
 rotate_log_time: "daily"
 rotate_log_days: "12"
+
+aws_region: "eu-central-1"
+aws_access_key_id: "{{ lookup('env', 'TF_VAR_aws_access_key') }}"
+aws_secret_access_key: "{{ lookup('env', 'TF_VAR_aws_secret_key') }}"

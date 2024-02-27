@@ -107,13 +107,19 @@
     src: "{{ path_nginx_conf }}"
     dest: /etc/nginx/sites-available/default
 
+
+- name: Get secrets
+  set_fact:
+    secret_cert: "{{ lookup('aws_secret', 'cert', region=aws_region, aws_access_key=aws_access_key_id, aws_secret_key=aws_secret_access_key) }}"
+    secret_key: "{{ lookup('aws_secret', 'key', region=aws_region, aws_access_key=aws_access_key_id, aws_secret_key=aws_secret_access_key) }}"
+
 - name: Copy cert
   ansible.builtin.copy:
-    src: "{{ path_cert }}"
+    content: "{{ secret_cert }}"
     dest: /etc/ssl/certs/nginx-selfsigned.crt
 - name: Copy key
   ansible.builtin.copy:
-    src: "{{ path_key }}"
+    content: "{{ secret_key }}"
     dest: /etc/ssl/private/nginx-selfsigned.key
 
 - name: Copy logrotate
