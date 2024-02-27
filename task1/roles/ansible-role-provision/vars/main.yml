@@ -1,5 +1,8 @@
 ---
 # vars file for ansible-role-provision
+user0: user-run
+path_sudoers: "files/sudoers-user"
+
 user1: user-a
 path_ssh_key_user_1: "files/user-a-authorized_keys"
 
@@ -11,3 +14,5 @@ path_nginx_conf: "files/nginxconf"
 path_cert: "files/nginx-selfsigned.crt"
 path_key: "files/nginx-selfsigned.key"
 path_logrotate: "files/logrotateconf"
+
+rotate_log_days: "12"

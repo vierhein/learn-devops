@@ -26,15 +26,15 @@
     state: enabled
 
 # Add users for run script
-- name: Add the user-run
+- name: Add the "{{ user0 }}"
   ansible.builtin.user:
-    name: user-run
+    name: "{{ user0 }}"
     shell: /bin/bash
     create_home: true
 # Set permission user-run for runnig script
 - name: Copy sudoers
-  ansible.builtin.copy:
-    src: files/sudoers-user
+  template:
+    src: "{{ path_sudoers }}"
     dest: /etc/sudoers.d/sudoers-user
 
 # Add users for sites administration, set ssh keys
@@ -117,7 +117,7 @@
     dest: /etc/ssl/private/nginx-selfsigned.key
 
 - name: Copy logrotate
-  ansible.builtin.copy:
+  template:
     src: "{{ path_logrotate }}"
     dest: /etc/logrotate.d/nginx
 

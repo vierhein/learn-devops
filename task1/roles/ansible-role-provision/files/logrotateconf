@@ -1,10 +1,10 @@
 /var/log/nginx/*.log {
 	daily
-	rotate 14
+	rotate {{ rotate_log_days }}
 	compress
 	delaycompress
 	notifempty
-	create 0640 www-data adm
+	create 0640 vagrant vagrant
 	sharedscripts
 	postrotate
 		invoke-rc.d nginx rotate >/dev/null 2>&1
