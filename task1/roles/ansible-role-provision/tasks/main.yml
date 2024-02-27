@@ -38,39 +38,39 @@
     dest: /etc/sudoers.d/sudoers-user
 
 # Add users for sites administration, set ssh keys
-- name: Add the user-a
+- name: Add the "{{ user1 }}"
   ansible.builtin.user:
-    name: user-a
+    name: "{{ user1 }}"
     shell: /bin/bash
     create_home: true
 - name: Create ssh directory
   ansible.builtin.file:
-    path: /home/user-a/.ssh
+    path: "/home/{{ user1 }}/.ssh"
     state: directory
     mode: '0755'
 - name: Copy file with owner and permissions
   ansible.builtin.copy:
-    src: files/user-a-authorized_keys
-    dest: /home/user-a/.ssh/authorized_keys
-    owner: user-a
-    group: user-a
+    src: "{{ path_ssh_key_user_1 }}"
+    dest: "/home/{{ user1 }}/.ssh/authorized_keys"
+    owner: "{{ user1 }}"
+    group: "{{ user1 }}"
     mode: '0644'
-- name: Add the user-a
+- name: Add the "{{ user2 }}"
   ansible.builtin.user:
-    name: user-b
+    name: "{{ user2 }}"
     shell: /bin/bash
     create_home: true
 - name: Create ssh directory
   ansible.builtin.file:
-    path: /home/user-b/.ssh
+    path: "/home/{{ user2 }}/.ssh"
     state: directory
     mode: '0755'
 - name: Copy file with owner and permissions
   ansible.builtin.copy:
-    src: files/user-a-authorized_keys
-    dest: /home/user-b/.ssh/authorized_keys
-    owner: user-a
-    group: user-a
+    src: "{{ path_ssh_key_user_2 }}"
+    dest: "/home/{{ user2 }}/.ssh/authorized_keys"
+    owner: "{{ user2 }}"
+    group: "{{ user2 }}"
     mode: '0644'
 
 #site-a
@@ -78,8 +78,8 @@
   ansible.builtin.file:
     path: /var/www/site-a/html
     state: directory
-    owner: user-a
-    group: user-a
+    owner: "{{ user1 }}"
+    group: "{{ user1 }}"
     mode: '0755'
 
 #site-b
@@ -87,13 +87,13 @@
   ansible.builtin.file:
     path: /var/www/site-b/html
     state: directory
-    owner: user-b
-    group: user-b
+    owner: "{{ user2 }}"
+    group: "{{ user2 }}"
     mode: '0755'
 
 - name: Copy index.php
   ansible.builtin.copy:
-    src: files/index.php
+    src: "{{ path_index_php }}"
     dest: /var/www/site-a/html/index.php
 
 - name: Copy default nginx page
@@ -104,21 +104,21 @@
 
 - name: Copy nginx conf
   ansible.builtin.copy:
-    src: files/nginxconf
+    src: "{{ path_nginx_conf }}"
     dest: /etc/nginx/sites-available/default
 
 - name: Copy cert
   ansible.builtin.copy:
-    src: files/nginx-selfsigned.crt
+    src: "{{ path_cert }}"
     dest: /etc/ssl/certs/nginx-selfsigned.crt
 - name: Copy key
   ansible.builtin.copy:
-    src: files/nginx-selfsigned.key
+    src: "{{ path_key }}"
     dest: /etc/ssl/private/nginx-selfsigned.key
 
 - name: Copy logrotate
   ansible.builtin.copy:
-    src: files/logrotateconf
+    src: "{{ path_logrotate }}"
     dest: /etc/logrotate.d/nginx
 
 - name: Restart service nginx
