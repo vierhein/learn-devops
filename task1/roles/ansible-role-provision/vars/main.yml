@@ -20,4 +20,5 @@ path_cert: "files/nginx-selfsigned.crt"
 path_key: "files/nginx-selfsigned.key"
 path_logrotate: "files/logrotateconf"
 
+rotate_log_time: "daily"
 rotate_log_days: "12"
