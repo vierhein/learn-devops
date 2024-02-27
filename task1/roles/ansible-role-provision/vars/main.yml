@@ -1,5 +1,10 @@
 ---
 # vars file for ansible-role-provision
+ngix_version: "1.18.0-6.1+deb11u3"
+openssl_version: "1.1.1w-0+deb11u1"
+ufw_version: "0.36-7.1"
+php_fpm_version: "2:7.4+76"
+
 user0: user-run
 path_sudoers: "files/sudoers-user"
 

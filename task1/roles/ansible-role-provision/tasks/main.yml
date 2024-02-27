@@ -4,10 +4,10 @@
 - name: Install nginx, openssl, ufw, php-fpm
   ansible.builtin.package:
     name: 
-      - nginx
-      - openssl
-      - ufw
-      - php-fpm
+      - "nginx={{ ngix_version }}"
+      - "openssl={{ openssl_version }}"
+      - "ufw={{ ufw_version }}"
+      - "php-fpm={{ php_fpm_version }}"
     update_cache: yes
     state: present
 
