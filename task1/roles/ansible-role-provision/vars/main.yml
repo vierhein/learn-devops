@@ -1,0 +1,26 @@
+---
+# vars file for ansible-role-provision
+ngix_version: "1.18.0-6.1+deb11u3"
+openssl_version: "1.1.1w-0+deb11u1"
+ufw_version: "0.36-7.1"
+php_fpm_version: "2:7.4+76"
+
+user0: user-run
+path_sudoers: "files/sudoers-user"
+
+user1: user-a
+path_ssh_key_user_1: "files/user-a-authorized_keys"
+
+user2: user-b
+path_ssh_key_user_2: "files/user-b-authorized_keys"
+
+path_index_php: "files/index.php"
+path_nginx_conf: "files/nginxconf"
+path_logrotate: "files/logrotateconf"
+
+rotate_log_time: "daily"
+rotate_log_days: "12"
+
+aws_region: "eu-central-1"
+aws_access_key_id: "{{ lookup('env', 'TF_VAR_aws_access_key') }}"
+aws_secret_access_key: "{{ lookup('env', 'TF_VAR_aws_secret_key') }}"

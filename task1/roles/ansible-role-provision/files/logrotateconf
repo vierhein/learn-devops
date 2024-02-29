@@ -1,0 +1,12 @@
+/var/log/nginx/*.log {
+	{{ rotate_log_time }}
+	rotate {{ rotate_log_days }}
+	compress
+	delaycompress
+	notifempty
+	create 0640 vagrant vagrant
+	sharedscripts
+	postrotate
+		invoke-rc.d nginx rotate >/dev/null 2>&1
+	endscript
+}
