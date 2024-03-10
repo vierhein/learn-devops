@@ -1,53 +1,32 @@
-name: Deploy to AWS
+name: Deploy Application
 
 on:
   pull_request:
-    branches:
-      - task1-cicd
+    types: [opened, reopened, synchronize]
+  push:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v2
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.x'
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
 
-    - name: Install dependencies
-      run: |
-        pip install awscli
+      - name: Install dependencies
+        run: pip install -r requirements.txt
 
-    - name: Create AWS environment
-      id: create_environment
-      run: |
-        # Your AWS deployment commands here
-        # Example: aws cloudformation create-stack --stack-name my-stack --template-body file://template.yaml
+      - name: Create AWS Environment
+        uses: actions/aws/cli@v2
+        with:
+          args: ecs create-cluster --cluster-name my-cluster
 
-    - name: Deploy application
-      run: |
-        # Your deployment commands here
-        # Example: aws s3 sync . s3://my-bucket
-
-    - name: Add comment to PR
-      if: github.event_name == 'pull_request'
-      run: |
-        timestamp=$(date +"%Y-%m-%d %T")
-        echo "Application deployed at $timestamp: [Application Link](your_application_link)" > comment.md
-        gh pr comment ${{ github.event.number }} --body "$(cat comment.md)"
-
-    - name: Redeploy on push
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      run: |
-        # Your redeployment commands here
-        # Example: aws s3 sync . s3://my-bucket
-
-    - name: Destroy AWS environment
-      if: github.event_name == 'pull_request' && github.event.action == 'closed'
-      run: |
-        # Your AWS cleanup commands here
-        # Example: aws cloudformation delete-stack --stack-name my-stack
+      - name: Deploy Application
+        run: |
+          # Your deployment script here
+          # e.g., using AWS ECS or any other deployment method
