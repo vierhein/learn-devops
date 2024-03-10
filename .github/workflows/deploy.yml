@@ -1,9 +1,10 @@
 name: Deploy Application
 
 on:
-  pull_request:
-    types: [opened, reopened, synchronize]
   push:
+    branches: [ task1-cicd ]
+  pull_request:
+    branches: [ task1-cicd ]
 
 jobs:
   deploy:
@@ -13,20 +14,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'
-
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-
-      - name: Create AWS Environment
-        uses: actions/aws/cli@v2
-        with:
-          args: ecs create-cluster --cluster-name my-cluster
-
       - name: Deploy Application
         run: |
           # Your deployment script here
-          # e.g., using AWS ECS or any other deployment method
