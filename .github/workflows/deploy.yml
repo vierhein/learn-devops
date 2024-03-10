@@ -1,8 +1,9 @@
-name: Pull Request Environment
+name: Deploy to AWS
 
 on:
   pull_request:
-    types: [opened, synchronize]  # Trigger on PR creation and pushes
+    types: [opened, synchronize]
+    branches: [ task1-cicd ]
 
 env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
