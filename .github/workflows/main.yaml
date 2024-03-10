@@ -1,0 +1,14 @@
+name: Deploy to AWS
+
+on: 
+  pull_request:
+    branches:
+      - task1-cicd
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure AWS credentials
+        run: |
+          echo "hello"
