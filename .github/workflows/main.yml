@@ -1,6 +1,9 @@
 name: Deploy to AWS
 
-on: pull_request
+on: 
+  pull_request:
+    branches:
+      - cicd
 
 jobs:
   build:
