@@ -23,5 +23,5 @@ jobs:
           aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
           aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
           aws configure set region $AWS_REGION
-      - name: test
-        run: aws s3 ls
+      - name: Create ec2 instance
+        run: aws ec2 run-instances --image-id ami-04dfd853d88e818e8 --instance-type t2.micro --key-name ssh_key
