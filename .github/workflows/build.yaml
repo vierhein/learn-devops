@@ -1,0 +1,36 @@
+name: Deploy to AWS
+
+on:
+  pull_request:
+    branches:
+      - task1-cicd
+
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_REGION: eu-central-1
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get repo code
+        uses: actions/checkout@v4
+      - name: Configure AWS credentials
+        run: |
+          aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+          aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+          aws configure set region $AWS_REGION
+      - name: sam vers
+        run: sam --version
+      # - name: Create ec2 instance
+      #   run: | 
+      #     instance_id=$(aws ec2 run-instances \
+      #     --image-id ami-04dfd853d88e818e8 \
+      #     --instance-type t2.micro \
+      #     --key-name ssh_key \
+      #     --output json \
+      #     --query 'Instances[0].InstanceId')
+      #     echo "EC2 instance created with Instance ID: $instance_id"
+
+      
