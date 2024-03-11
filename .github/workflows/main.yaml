@@ -1,10 +1,9 @@
 name: Deploy to AWS
 
-on:
-  workflow_dispatch:
-  pull_request:
-    branches:
-      - task1-cicd
+on: workflow_dispatch
+  # pull_request:
+  #   branches:
+  #     - task1-cicd
 
 jobs:
   build:
