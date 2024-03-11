@@ -24,4 +24,11 @@ jobs:
           aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
           aws configure set region $AWS_REGION
       - name: Create ec2 instance
-        run: aws ec2 run-instances --image-id ami-04dfd853d88e818e8 --instance-type t2.micro --key-name ssh_key
+        run: | 
+          instance_id=$(aws ec2 run-instances \
+          --image-id ami-04dfd853d88e818e8 \
+          --instance-type t2.micro \
+          --key-name ssh_key \
+          --output json \
+          --query 'Instances[0].InstanceId')
+          echo "EC2 instance created with Instance ID: $instance_id"
