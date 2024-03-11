@@ -32,11 +32,5 @@ jobs:
           --output json \
           --query 'Instances[0].InstanceId')
           echo "EC2 instance created with Instance ID: $instance_id"
-  cleanup:
-    needs: build
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' && github.event.action == 'closed'
 
-    steps:
-      - name: Destroy AWS Environment
-        run: aws ec2 terminate-instances --instance-ids $instance_id
+      
