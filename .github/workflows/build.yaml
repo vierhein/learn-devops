@@ -22,7 +22,8 @@ jobs:
           aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
           aws configure set region $AWS_REGION
       - name: sam vers
-        run: | 
+        run: |
+          cd task1/hello 
           output=$(sam deploy --no-confirm-changeset --no-fail-on-empty-changeset)
           echo $output
       - uses: actions/github-script@v7
