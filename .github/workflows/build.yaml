@@ -26,7 +26,8 @@ jobs:
           cd task1/hello
           sam build
       - name: deploy
-        run: | 
+        run: |
+          cd task1/hello 
           sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
       - uses: actions/github-script@v7
         with:
