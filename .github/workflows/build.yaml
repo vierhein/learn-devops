@@ -30,7 +30,8 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '👋 Thanks for reporting! ${{ github.event.repository.updated_at}}'
+              body: '👋 Thanks for reporting! 
+              ${{ github.event.repository.updated_at}}'
             })
       
 
