@@ -23,7 +23,8 @@ jobs:
           aws configure set region $AWS_REGION
       - name: sam vers
         run: |
-          cd task1/hello 
+          cd task1/hello
+          sam build 
           output=$(sam deploy --no-confirm-changeset --no-fail-on-empty-changeset)
           echo $output
       - uses: actions/github-script@v7
