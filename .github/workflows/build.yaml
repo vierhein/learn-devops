@@ -37,12 +37,12 @@ jobs:
           echo $REPORT
       - uses: actions/github-script@v7
         env:
-          DEPLOY_REPORT: steps.deploy.outputs.REPORT
+          REPORT: steps.deploy.outputs.REPORT
         with:
           script: |
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '${{ process.env.REPORT }} ${{ github.event.repository.updated_at }}'
+              body: '${{ github.event.repository.updated_at }}'
             })
