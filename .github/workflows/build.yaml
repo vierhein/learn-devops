@@ -45,5 +45,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '${{steps.geturl.outputs.url}} ${{ github.event.repository.updated_at }}'
+              body: '${{steps.geturl.outputs.url}} ${{ steps.date.outputs.timenow }}'
             })
