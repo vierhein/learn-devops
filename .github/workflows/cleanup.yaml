@@ -22,4 +22,3 @@ jobs:
         aws configure set region $AWS_REGION
     - name: Cleanup AWS env
       run: aws cloudformation delete-stack --stack-name app-${{github.event.pull_request.number}}
-      # run: aws ec2 terminate-instances --instance-ids $instance_id
