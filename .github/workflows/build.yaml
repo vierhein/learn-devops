@@ -11,7 +11,7 @@ env:
   AWS_REGION: eu-central-1
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Get repo code
@@ -21,17 +21,16 @@ jobs:
           aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
           aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
           aws configure set region $AWS_REGION
-      - name: build
+      - name: Build
         run: |
           cd task1/hello
           sam build
-      - name: deploy
+      - name: Deploy
         run: |
           cd task1/hello 
-          sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --stack-name app-${{github.event.pull_request.number}}
-          
+          sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --stack-name app-${{github.event.pull_request.number}}          
       - id: geturl
-        name: geturl
+        name: Get app url
         run: |
           url=$(aws cloudformation describe-stacks --stack-name app-${{github.event.pull_request.number}} | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "HelloWorldApi") | .OutputValue')
           echo "url=$url" >> $GITHUB_OUTPUT
