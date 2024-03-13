@@ -37,7 +37,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: $out ${{ github.event.repository.updated_at}}'
+              body: '$out ${{ github.event.repository.updated_at}}'
             })
       
 
