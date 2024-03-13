@@ -28,12 +28,12 @@ jobs:
       - name: deploy
         run: |
           cd task1/hello 
-          sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --stack-name app-124
+          sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --stack-name app-${{github.event.pull_request.number}}
           
       - id: geturl
         name: geturl
         run: |
-          url=$(aws cloudformation describe-stacks --stack-name sam-app | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "HelloWorldApi") | .OutputValue')
+          url=$(aws cloudformation describe-stacks --stack-name app-${{github.event.pull_request.number}} | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "HelloWorldApi") | .OutputValue')
           echo "url=$url" >> $GITHUB_OUTPUT
       - uses: actions/github-script@v7
         with:
