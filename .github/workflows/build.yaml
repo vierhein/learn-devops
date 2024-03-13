@@ -25,11 +25,14 @@ jobs:
         run: |
           cd task1/hello
           sam build
-      - id: deploy
-        name: deploy
+      - name: dep
         run: |
           cd task1/hello 
           sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
+          
+      - id: deploy
+        name: deploy
+        run: |
           REPORT=$(sam list stack-outputs --stack-name sam-app --output table)
           echo $REPORT > $GITHUB_OUTPUT
       - uses: actions/github-script@v7
