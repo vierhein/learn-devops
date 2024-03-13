@@ -28,7 +28,7 @@ jobs:
       - name: deploy
         run: |
           cd task1/hello 
-          sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
+          sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --stack-name 123
           
       - id: geturl
         name: geturl
