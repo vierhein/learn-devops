@@ -25,24 +25,22 @@ jobs:
         run: |
           cd task1/hello
           sam build
-      - name: dep
+      - name: deploy
         run: |
           cd task1/hello 
           sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
           
-      - id: deploy
-        name: deploy
+      - id: geturl
+        name: geturl
         run: |
-          REPORT=$(aws cloudformation describe-stacks --stack-name sam-app | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "HelloWorldApi") | .OutputValue')
-          echo $REPORT
+          url=$(aws cloudformation describe-stacks --stack-name sam-app | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "HelloWorldApi") | .OutputValue')
+          echo $url >> $GITHUB_OUTPUT
       - uses: actions/github-script@v7
-        env:
-          REPORT: steps.deploy.outputs.REPORT
         with:
           script: |
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '${{ github.event.repository.updated_at }}'
+              body: '${{steps.geturl.outputs.url}} ${{ github.event.repository.updated_at }}'
             })
