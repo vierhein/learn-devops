@@ -34,7 +34,7 @@ jobs:
         name: geturl
         run: |
           url=$(aws cloudformation describe-stacks --stack-name sam-app | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "HelloWorldApi") | .OutputValue')
-          echo $url >> $GITHUB_OUTPUT
+          echo "url=$url" >> $GITHUB_OUTPUT
       - uses: actions/github-script@v7
         with:
           script: |
