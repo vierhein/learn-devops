@@ -25,18 +25,23 @@ jobs:
         run: |
           cd task1/hello
           sam build
-      - name: deploy
+      - id: deploy
+        name: deploy
         run: |
           cd task1/hello 
           sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
+          REPORT=$(sam list stack-outputs --stack-name sam-app --output table)
+          echo $REPORT > $GITHUB_OUTPUT
       - uses: actions/github-script@v7
+        env:
+          DEPLOY_REPORT: steps.deploy.outputs.REPORT
         with:
           script: |
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '👋 Thanks for reporting! ${{ github.event.repository.updated_at}}'
+              body: '${{ process.env.REPORT }} ${{ github.event.repository.updated_at }}'
             })
       
 
