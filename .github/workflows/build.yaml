@@ -32,7 +32,6 @@ jobs:
       - uses: actions/github-script@v7
         with:
           script: |
-            console.log(sam list stack-outputs --stack-name sam-app --output table)
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
