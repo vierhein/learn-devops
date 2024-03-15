@@ -19,4 +19,4 @@ jobs:
         role-to-assume: arn:aws:iam::357197750522:role/actionsgithub
         aws-region: eu-central-1
     - name: Cleanup AWS env
-      run: sam delete --no-prompts --stack-name app-${{github.event.pull_request.number}}
+      run: sam delete --no-prompts --stack-name ${{github.event.pull_request.head.ref}}

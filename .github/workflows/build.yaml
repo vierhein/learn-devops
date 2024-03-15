@@ -27,12 +27,13 @@ jobs:
       - name: Deploy
         run: |
           cd task1/hello 
-          sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --stack-name app-${{github.event.pull_request.number}}          
+          sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --stack-name ${{github.event.pull_request.head.ref}}          
       - id: geturl
         name: Get app url
         run: |
-          url=$(aws cloudformation describe-stacks --stack-name app-${{github.event.pull_request.number}} | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "HelloWorldApi") | .OutputValue')
+          url=$(aws cloudformation describe-stacks --stack-name ${{github.event.pull_request.head.ref}} | jq -r '.Stacks[].Outputs[] | select(.OutputKey == "HelloWorldApi") | .OutputValue')
           echo "url=$url" >> $GITHUB_OUTPUT
+          echo ${{github.event.pull_request.head.ref}}
       - name: Get current date
         id: date
         run: echo "timenow=$(date +'%Y-%m-%dT%H:%M:%S')" >> $GITHUB_OUTPUT
@@ -43,5 +44,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '${{steps.geturl.outputs.url}} ${{ steps.date.outputs.timenow }}'
+              body: 'APP URL: ${{steps.geturl.outputs.url}} Deploy time: ${{ steps.date.outputs.timenow }}'
             })
