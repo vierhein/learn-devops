@@ -4,21 +4,19 @@ on:
   pull_request:
     types: [closed]
     branches:
-      - task1-cicd
-
-env:
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  AWS_REGION: eu-central-1
+      - cicd
 
 jobs:
   cleanup:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     steps:
-    - name: Configure AWS credentials
-      run: |
-        aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
-        aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
-        aws configure set region $AWS_REGION
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: arn:aws:iam::357197750522:role/actionsgithub
+        aws-region: eu-central-1
     - name: Cleanup AWS env
-      run: sam delete --no-prompts --stack-name app-${{github.event.pull_request.number}}
+      run: sam delete --no-prompts --stack-name ${{github.event.pull_request.head.ref}}
