@@ -9,6 +9,9 @@ on:
 jobs:
   cleanup:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     steps:
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
