@@ -3,7 +3,7 @@ name: Deploy to AWS
 on:
   pull_request:
     branches:
-      - task1-cicd
+      - cicd
 
 jobs:
   build-and-deploy:
