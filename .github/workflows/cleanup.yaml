@@ -1,0 +1,22 @@
+name: Cleanup AWS env
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - cicd
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: arn:aws:iam::357197750522:role/actionsgithub
+        aws-region: eu-central-1
+    - name: Cleanup AWS env
+      run: sam delete --no-prompts --stack-name ${{github.event.pull_request.head.ref}}
