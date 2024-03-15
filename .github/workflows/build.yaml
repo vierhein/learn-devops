@@ -5,22 +5,17 @@ on:
     branches:
       - task1-cicd
 
-env:
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  AWS_REGION: eu-central-1
-
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Get repo code
         uses: actions/checkout@v4
-      - name: Configure AWS credentials
-        run: |
-          aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
-          aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
-          aws configure set region $AWS_REGION
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::357197750522:role/actionsgithub
+          aws-region: eu-central-1
       - name: Build
         run: |
           cd task1/hello
