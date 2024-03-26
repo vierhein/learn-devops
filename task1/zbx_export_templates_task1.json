@@ -1,0 +1,91 @@
+{
+    "zabbix_export": {
+        "version": "6.4",
+        "template_groups": [
+            {
+                "uuid": "7df96b18c230490a9a0a9e2307226338",
+                "name": "Templates"
+            }
+        ],
+        "templates": [
+            {
+                "uuid": "3171c94375444f218416c8c06a61fe52",
+                "template": "task1",
+                "name": "task1",
+                "groups": [
+                    {
+                        "name": "Templates"
+                    }
+                ],
+                "discovery_rules": [
+                    {
+                        "uuid": "9719f6943b124a3fa1fa124c85e18648",
+                        "name": "users",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "vfs.file.contents[/etc/passwd,utf8]",
+                        "delay": "1s",
+                        "item_prototypes": [
+                            {
+                                "uuid": "31eb9e269c5541c1a392e748e0df6633",
+                                "name": "CPU used {#USERNAME}",
+                                "key": "proc.cpu.util[,{#USERNAME}]",
+                                "delay": "5s",
+                                "value_type": "FLOAT"
+                            },
+                            {
+                                "uuid": "40ae6b4adaee4af685d755e073ea6531",
+                                "name": "MEM used  {#USERNAME}",
+                                "key": "proc.mem[, {#USERNAME}]",
+                                "delay": "5s"
+                            },
+                            {
+                                "uuid": "4bbcacbd18524bfcb6dc873ad357302b",
+                                "name": "Proc num {#USERNAME}",
+                                "key": "proc.num[,{#USERNAME}]",
+                                "delay": "5s"
+                            }
+                        ],
+                        "preprocessing": [
+                            {
+                                "type": "JAVASCRIPT",
+                                "parameters": [
+                                    "return value.match(/^.*bash$/gm).join(\"\\n\")"
+                                ]
+                            },
+                            {
+                                "type": "JAVASCRIPT",
+                                "parameters": [
+                                    "return value.replace(/..bin.bash$/gm,\"\\\"},\")"
+                                ]
+                            },
+                            {
+                                "type": "JAVASCRIPT",
+                                "parameters": [
+                                    "return value.replace(/:.*:/gm,\"\\\",\\\"{#HOMEDIR}\\\":\\\"\")"
+                                ]
+                            },
+                            {
+                                "type": "JAVASCRIPT",
+                                "parameters": [
+                                    "return value.replace(/^/gm,\"{\\\"{#USERNAME}\\\":\\\"\")"
+                                ]
+                            },
+                            {
+                                "type": "JAVASCRIPT",
+                                "parameters": [
+                                    "return value.replace(/^/,\"{\\\"data\\\":[\")"
+                                ]
+                            },
+                            {
+                                "type": "JAVASCRIPT",
+                                "parameters": [
+                                    "return value.replace(/.$/,\"]}\")"
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
