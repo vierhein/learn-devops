@@ -65,14 +65,20 @@
                                 "name": "IDLE user {#USERNAME}",
                                 "key": "system.run[w -hs | grep {#USERNAME} | awk '{print $4}']",
                                 "delay": "10s",
-                                "trends": "0",
-                                "value_type": "TEXT"
+                                "preprocessing": [
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "    if (value.indexOf(\"s\") !== -1) {\n        return parseInt(0);\n    } else {\n        var parts = value.split(\".\");\n        var min = parseInt(parts[0]);\n        var sec = parseInt(parts[1]);\n        return parseInt(min);\n    }"
+                                        ]
+                                    }
+                                ]
                             }
                         ],
                         "trigger_prototypes": [
                             {
                                 "uuid": "76c6515afa8a4b0997da8f6799c86774",
-                                "expression": "last(/task1/proc.cpu.util[,{#USERNAME}])<20 and last(/task1/system.run[w -hs | grep {#USERNAME} | awk '{print $4}'])>\"1:00\"",
+                                "expression": "last(/task1/proc.cpu.util[,{#USERNAME}])>20 and last(/task1/system.run[w -hs | grep {#USERNAME} | awk '{print $4}'])>1",
                                 "name": "Hight CPU util  {#USERNAME}",
                                 "priority": "DISASTER"
                             }
