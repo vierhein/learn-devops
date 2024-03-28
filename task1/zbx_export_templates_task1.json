@@ -23,7 +23,7 @@
                         "name": "users",
                         "type": "ZABBIX_ACTIVE",
                         "key": "vfs.file.contents[/etc/passwd,utf8]",
-                        "delay": "1s",
+                        "delay": "30s",
                         "item_prototypes": [
                             {
                                 "uuid": "31eb9e269c5541c1a392e748e0df6633",
@@ -36,13 +36,45 @@
                                 "uuid": "40ae6b4adaee4af685d755e073ea6531",
                                 "name": "MEM used  {#USERNAME}",
                                 "key": "proc.mem[, {#USERNAME}]",
-                                "delay": "5s"
+                                "delay": "5s",
+                                "trigger_prototypes": [
+                                    {
+                                        "uuid": "3f96dff0dfba48af942136b5d8431e73",
+                                        "expression": "last(/task1/proc.mem[, {#USERNAME}])>1024000000",
+                                        "name": "Hight MEM util {#USERNAME}",
+                                        "priority": "HIGH"
+                                    }
+                                ]
                             },
                             {
                                 "uuid": "4bbcacbd18524bfcb6dc873ad357302b",
                                 "name": "Proc num {#USERNAME}",
                                 "key": "proc.num[,{#USERNAME}]",
                                 "delay": "5s"
+                            },
+                            {
+                                "uuid": "c7e202141e5445c082476c29e091e92f",
+                                "name": "Last login {#USERNAME}",
+                                "key": "system.run[last | grep {#USERNAME}]",
+                                "delay": "5s",
+                                "trends": "0",
+                                "value_type": "TEXT"
+                            },
+                            {
+                                "uuid": "d7680d3428cb4e3cbc8df7ad07245efe",
+                                "name": "IDLE user {#USERNAME}",
+                                "key": "system.run[w -hs | grep {#USERNAME} | awk '{print $4}']",
+                                "delay": "10s",
+                                "trends": "0",
+                                "value_type": "TEXT"
+                            }
+                        ],
+                        "trigger_prototypes": [
+                            {
+                                "uuid": "76c6515afa8a4b0997da8f6799c86774",
+                                "expression": "last(/task1/proc.cpu.util[,{#USERNAME}])<20 and last(/task1/system.run[w -hs | grep {#USERNAME} | awk '{print $4}'])>\"1:00\"",
+                                "name": "Hight CPU util  {#USERNAME}",
+                                "priority": "DISASTER"
                             }
                         ],
                         "preprocessing": [
