@@ -87,19 +87,13 @@
                             {
                                 "type": "JAVASCRIPT",
                                 "parameters": [
-                                    "return value.match(/^.*bash$/gm).join(\"\\n\")"
+                                    "return value.match(/^.*(?:bash|sh)$/gm).join(\"\\n\");"
                                 ]
                             },
                             {
                                 "type": "JAVASCRIPT",
                                 "parameters": [
-                                    "return value.replace(/..bin.bash$/gm,\"\\\"},\")"
-                                ]
-                            },
-                            {
-                                "type": "JAVASCRIPT",
-                                "parameters": [
-                                    "return value.replace(/:.*:/gm,\"\\\",\\\"{#HOMEDIR}\\\":\\\"\")"
+                                    "return value.replace(/:(.*)/gm, \":\\\"},\");"
                                 ]
                             },
                             {
