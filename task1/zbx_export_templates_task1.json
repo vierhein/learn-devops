@@ -99,6 +99,12 @@
                             {
                                 "type": "JAVASCRIPT",
                                 "parameters": [
+                                    "return value.replace(/:/gm, \"\");"
+                                ]
+                            },
+                            {
+                                "type": "JAVASCRIPT",
+                                "parameters": [
                                     "return value.replace(/^/gm,\"{\\\"{#USERNAME}\\\":\\\"\")"
                                 ]
                             },
