@@ -26,6 +26,20 @@
                         "delay": "30s",
                         "item_prototypes": [
                             {
+                                "uuid": "d7680d3428cb4e3cbc8df7ad07245efe",
+                                "name": "IDLE user {#USERNAME}",
+                                "key": "idle[{#USERNAME}]",
+                                "delay": "10s",
+                                "preprocessing": [
+                                    {
+                                        "type": "JAVASCRIPT",
+                                        "parameters": [
+                                            "    if (value.indexOf(\"s\") !== -1) {\n        return parseInt(0);\n    } else {\n        var parts = value.split(\".\");\n        var min = parseInt(parts[0]);\n        var sec = parseInt(parts[1]);\n        return parseInt(min);\n    }"
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
                                 "uuid": "31eb9e269c5541c1a392e748e0df6633",
                                 "name": "CPU used {#USERNAME}",
                                 "key": "proc.cpu.util[,{#USERNAME}]",
@@ -55,30 +69,16 @@
                             {
                                 "uuid": "c7e202141e5445c082476c29e091e92f",
                                 "name": "Last login {#USERNAME}",
-                                "key": "system.run[last | grep {#USERNAME}]",
+                                "key": "userlast[{#USERNAME}]",
                                 "delay": "5s",
                                 "trends": "0",
                                 "value_type": "TEXT"
-                            },
-                            {
-                                "uuid": "d7680d3428cb4e3cbc8df7ad07245efe",
-                                "name": "IDLE user {#USERNAME}",
-                                "key": "system.run[w -hs | grep {#USERNAME} | awk '{print $4}']",
-                                "delay": "10s",
-                                "preprocessing": [
-                                    {
-                                        "type": "JAVASCRIPT",
-                                        "parameters": [
-                                            "    if (value.indexOf(\"s\") !== -1) {\n        return parseInt(0);\n    } else {\n        var parts = value.split(\".\");\n        var min = parseInt(parts[0]);\n        var sec = parseInt(parts[1]);\n        return parseInt(min);\n    }"
-                                        ]
-                                    }
-                                ]
                             }
                         ],
                         "trigger_prototypes": [
                             {
                                 "uuid": "76c6515afa8a4b0997da8f6799c86774",
-                                "expression": "last(/task1/proc.cpu.util[,{#USERNAME}])>20 and last(/task1/system.run[w -hs | grep {#USERNAME} | awk '{print $4}'])>1",
+                                "expression": "last(/task1/proc.cpu.util[,{#USERNAME}])>20 and last(/task1/idle[{#USERNAME}])>1",
                                 "name": "Hight CPU util  {#USERNAME}",
                                 "priority": "DISASTER"
                             }
