@@ -1,0 +1,10 @@
+filebeat.inputs:
+- type: log
+  id: my-filestream-id
+  enabled: true
+  paths:
+    - /tmp/*.log
+
+output.logstash:
+  hosts: ["192.168.100.65:5044"]
+
