@@ -4,7 +4,7 @@ metadata:
   name: script-file
 data: 
   script.sh: |
-      API_URL="https://api.telegram.org/bot6509396285:AAHVAbVFEQyQkPycJYuaSWmpXI9FMAbMoro/sendMessage"
+      API_URL="https://someurl"
       THRESHOLD=1
       NAMESPACE=default
       apk add curl jq &&
@@ -13,4 +13,4 @@ data:
       --header "Authorization: Bearer $(cat /var/run/secrets/kubernetes.io/serviceaccount/token)" > output
       paste <(cat output | jq '.items[].metadata.name') <(cat output | jq '.items[].status.containerStatuses[].restartCount') | awk '{printf "%-40s %-40s\n", $1, $2}' > columns
       ARR_PODS=$(cat columns | awk -v THR="$THRESHOLD" '$2>THR' | awk '{print $1}') && \
-      [ -n "$ARR_PODS" ] && curl -X POST "$API_URL" -d "chat_id=-1002012860719&text=pods restart count greater than $THRESHOLD $ARR_PODS" || echo "OK"
+      [ -n "$ARR_PODS" ] && curl -X POST "$API_URL" -d "chat_id=-1111111&text=pods restart count greater than $THRESHOLD $ARR_PODS" || echo "OK"
