@@ -102,7 +102,7 @@ services:
     logging:
       driver: journald
     volumes:
-      - ./fluent.conf:/fluentd/etc/fluent.conf
+      - ./fluentd.conf:/fluentd/etc/fluentd.conf
     healthcheck:
       test: [ "CMD", "nc", "-u", "-z", "-v", "localhost", "24224" ]
       interval: 5s
